@@ -533,7 +533,7 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
 .obj{position:relative;transform-style:preserve-3d;will-change:transform}
 .face{position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
 .cface{border-radius:12px;background:#15181d}
-.cface img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.cface img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .cface .art{position:absolute;inset:0}
 .cface .gname{position:absolute;left:0;right:0;bottom:0;padding:14px;font:700 16px var(--display);color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.8))}
 .glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(255,255,255,.5),rgba(255,255,255,0) 45%);mix-blend-mode:overlay}
@@ -915,7 +915,7 @@ function artStyle(c,tier){const h=hash(c.id);const hue=h%360,hue2=(hue+60+(h>>8)
   return `--g:linear-gradient(${(h>>4)%360}deg,hsl(${hue} 55% 42%),hsl(${hue2} 60% 22%) 70%,${tier.hex}66);--x:${20+(h>>12)%60}%;--y:${15+(h>>16)%50}%`}
 function findCard(id){for(const cs of CASES)for(const c of cs.cards)if(c.id===id)return c;return null}
 function imgFor(c){return IMG[c.id]||c.imgUrl||(findCard(c.id)||{}).imgUrl||IMAGE_URLS[c.id]||null}
-function artHTML(c,tier,extra=""){const src=imgFor(c);if(src)return `<div class="art has-img ${extra}"><img class="cimg" src="${esc(src)}" alt="${esc(c.name)}"></div>`;const holo=tier.min>=150?" holo":"";return `<div class="art${holo} ${extra}" style="${artStyle(c,tier)}"></div>`}
+function artHTML(c,tier,extra=""){const src=imgFor(c);if(src)return `<div class="art has-img ${extra}" style="${artStyle(c,tier)}"><img class="cimg" src="${esc(src)}" alt="${esc(c.name)}" loading="lazy" onerror="this.parentNode.classList.remove('has-img');this.remove()"></div>`;const holo=tier.min>=150?" holo":"";return `<div class="art${holo} ${extra}" style="${artStyle(c,tier)}"></div>`}
 
 function caseStats(cs){
   const cards=cs.cards.map(card);
@@ -1161,7 +1161,7 @@ function cuboid(W,H,D,front,back,edgeCls,extra=""){const h=D/2;
   <div class="face" style="width:${W}px;height:${H}px;transform:translateZ(${h}px)">${front}</div>
   <div class="face" style="width:${W}px;height:${H}px;transform:rotateY(180deg) translateZ(${h}px)">${back}</div>`}
 function cardFront(it,tier){const src=imgFor(it);const holo=tier.min>=150||it.graded?`<div class="holo3d"></div>`:"";
-  return `<div class="cface" style="position:absolute;inset:0">${src?`<img src="${esc(src)}" alt="${esc(it.name)}">`:`${artHTML(it,tier)}<div class="gname">${esc(it.name)}</div>`}${holo}<div class="glare"></div></div>`}
+  return `<div class="cface" style="position:absolute;inset:0"><div class="art" style="${artStyle(it,tier)}"></div><div class="gname">${esc(it.name)}</div>${src?`<img src="${esc(src)}" alt="${esc(it.name)}" onerror="this.remove()">`:""}${holo}<div class="glare"></div></div>`}
 const cardBack=`<div class="cback" style="position:absolute;inset:0"><span>PULLBOX</span></div>`;
 function openInspect(it,fromInv){if(!it)return;const tier=tierOf(it.raw);const c=it.graded?"var(--gold)":tier.c;
   const body=$("#inspBody");body.style.setProperty("--c",c);
