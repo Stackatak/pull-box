@@ -133,13 +133,12 @@ h2{font-size:26px}
 /* card art: generated abstract foil, no character art */
 .art{position:relative;background:var(--g);overflow:hidden}
 .art::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--x) var(--y),rgba(255,255,255,.55),transparent 38%),radial-gradient(circle at calc(100% - var(--x)) calc(100% - var(--y)),rgba(0,0,0,.45),transparent 50%)}
-.art.holo::after{content:"";position:absolute;inset:-50%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.35) 48%,rgba(120,220,255,.25) 52%,transparent 60%);animation:sheen 3.5s linear infinite}
+
 @keyframes sheen{from{transform:translateX(-30%)}to{transform:translateX(30%)}}
 
 /* uploaded card images */
 .art.has-img{background:#0d1014}
 .art.has-img::before,.art.has-img::after{display:none}
-.art.has-img.holo::after{display:block;z-index:1;pointer-events:none}
 .art .cimg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .thumb{width:44px;height:61px;border-radius:3px;background:var(--panel-2);display:inline-block;vertical-align:middle;overflow:hidden;margin-right:8px;position:relative}
 .thumb .art{position:absolute;inset:0}
