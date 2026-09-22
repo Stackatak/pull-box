@@ -12,6 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pullbox">
+<script>window.PULLBOX_APP=true</script>
 <title>Pullbox: Pokémon card case opener</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -353,6 +354,40 @@ input[type=color]{width:64px;height:36px;padding:2px;background:var(--panel-2);b
 }
 .tu>*,.up>*{min-width:0}
 @media (max-width:860px){.tu,.up{grid-template-columns:minmax(0,1fr)!important}}
+/* app mode (installed mobile version) */
+html.app header{transition:transform .25s ease}
+html.app header.hide{transform:translateY(calc(-100% - env(safe-area-inset-top,0px) - 4px))}
+@media (prefers-reduced-motion: reduce){html.app header{transition:none}}
+.rotate{display:none;position:fixed;inset:0;z-index:2147483000;background:var(--bg);color:var(--text);flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:30px}
+.rotate .phone{width:62px;height:104px;border:4px solid var(--gold);border-radius:12px;position:relative;animation:rot 2.2s ease-in-out infinite}
+.rotate .phone::after{content:"";position:absolute;left:50%;bottom:6px;width:14px;height:3px;margin-left:-7px;border-radius:2px;background:var(--gold)}
+@keyframes rot{0%,20%{transform:rotate(0)}55%,80%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+.rotate b{font:700 20px var(--display)}
+.rotate p{color:var(--muted);margin:0;max-width:30ch}
+@media (orientation:portrait) and (max-width:900px){html.app .rotate{display:flex}}
+@media (max-height:520px){
+  .bar{padding:4px 0;gap:6px}
+  .logo{font-size:18px}
+  nav button{padding:6px 10px;font-size:14px}
+  .bal{font-size:15px;padding:4px 9px}
+  .daily,.pchip{font-size:14px}
+  .icon-btn{width:32px;height:32px}
+  main{padding-top:12px}
+  dialog{max-height:calc(100dvh - 12px);overflow:auto}
+  .reveal{padding:14px 18px}
+  .bigcard{width:130px;margin:8px auto}
+  .bigcard .art{height:180px}
+  .val{font-size:24px}
+  .reveal .btns{margin-top:10px}
+  .breel{height:170px}
+  .wheel{width:200px;height:200px}
+  .wheel-center b{font-size:22px}
+  .reel-shell{height:196px}
+  .rtile{height:164px}
+  .pwbox{padding:16px 20px}
+  .dtrack{margin:8px 0}
+  .dday{aspect-ratio:auto;padding:8px 2px}
+}
 /* missions */
 .mlist{display:grid;gap:8px;margin:10px 0 6px}
 .mrow{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
@@ -385,7 +420,20 @@ input[type=color]{width:64px;height:36px;padding:2px;background:var(--panel-2);b
 .bglow{position:absolute;border-radius:50%;pointer-events:none;will-change:transform,opacity}
 .toasts{position:fixed;inset:auto 16px calc(16px + env(safe-area-inset-bottom,0px)) auto;margin:0;padding:0;border:0;background:transparent;overflow:visible;display:grid;gap:8px;z-index:100;width:min(340px,calc(100vw - 32px));color:var(--text)}
 [popover].toasts:not(:popover-open){display:none}
-.toast{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+.toast{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:pop .5s cubic-bezier(.2,1.4,.4,1);font:inherit;color:inherit;text-align:left;width:100%;cursor:pointer}
+.toast .tx{min-width:0;display:flex;flex-direction:column}
+.toast .tk{color:var(--gold);font-weight:700;font-size:13px}
+.toast b{font-family:var(--display)}
+.toast .td{color:var(--muted);font-size:13px}
+@media (max-height:520px), (max-width:640px){
+  .toasts{width:min(250px,calc(100vw - 24px));inset:calc(8px + env(safe-area-inset-top,0px)) 10px auto auto}
+  .toast{padding:7px 10px;gap:9px;border-radius:7px}
+  .toast .badge{font-size:32px!important}
+  .toast .ticon{width:32px;height:32px;font-size:16px}
+  .toast b{font-size:14px;line-height:1.2}
+  .toast .tk{font-size:11px}
+  .toast .td{display:none}
+}
 /* slab */
 .slab{background:linear-gradient(160deg,#e9edf2,#b9c1cc);padding:6px;border-radius:6px;box-shadow:0 0 0 1px rgba(255,255,255,.4) inset}
 .slab .label{background:#fff;color:#222;border:2px solid #c8102e;border-radius:3px;padding:4px 7px;font:600 10px/1.2 var(--display);display:flex;justify-content:space-between;gap:6px;margin-bottom:6px}
@@ -702,7 +750,7 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
 
 <dialog id="pw" aria-labelledby="pwTitle"><div class="pwbox">
   <h3 id="pwTitle">Admin password</h3>
-  <input type="password" id="pwInput" inputmode="numeric" autocomplete="off" aria-describedby="pwErr" aria-label="Admin password">
+  <input type="password" id="pwInput" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-describedby="pwErr" aria-label="Admin password">
   <div class="pwerr" id="pwErr" role="alert"></div>
   <div style="display:flex;gap:10px;margin-top:10px"><button class="btn" id="pwCancel" style="flex:1">Cancel</button><button class="btn-gold" id="pwGo" style="flex:1">Unlock</button></div>
 </div></dialog>
@@ -755,6 +803,8 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
   <p id="askMsg" style="margin:10px 0 18px;line-height:1.5"></p>
   <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" id="askNo" style="flex:1">Cancel</button><button class="btn-gold" id="askYes" style="flex:1;font-size:15px;padding:9px"></button></div>
 </div></dialog>
+
+<div class="rotate" role="alert" aria-live="assertive"><div class="phone" aria-hidden="true"></div><b>Turn your phone sideways</b><p>Pullbox plays in landscape. Rotate your device to continue.</p></div>
 
 <dialog id="reveal"><div id="revealBody"></div></dialog>
 
@@ -889,7 +939,7 @@ function chime(level){const a=audio();if(!a)return;const notes=[523,659,784,1047
 
 /* ---------- views ---------- */
 let current=null,spinning=false;
-function show(view){if(view==="admin"&&!admin)view="cases";$("#feed").hidden=!(view==="cases"||view==="open");["cases","open","inventory","games","profile","leader","prices","admin"].forEach(v=>$("#v-"+v).hidden=v!==view);
+function show(view){if(view==="admin"&&!admin)view="cases";$("header").classList.remove("hide");$("#feed").hidden=!(view==="cases"||view==="open");["cases","open","inventory","games","profile","leader","prices","admin"].forEach(v=>$("#v-"+v).hidden=v!==view);
   document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-current",String(b.dataset.view===view||(view==="open"&&b.dataset.view==="cases"))));
   if(view==="inventory")renderInv();if(view==="prices")renderPrices();if(view==="profile")renderProfile();if(view==="games")renderGames();if(view==="cases")renderCases();if(view==="leader")renderLeader();if(view==="admin")renderAdmin();window.scrollTo({top:0})}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{if(spinning)return;if(b.dataset.view==="admin"&&!admin){askPassword();return}if(b.dataset.view==="profile")viewPid=null;show(b.dataset.view)});
@@ -1051,7 +1101,7 @@ function renderInv(){
   document.querySelectorAll("#inv [data-act]").forEach(b=>{const g=groups[+b.dataset.gi];
     b.onclick=async()=>{if(b.dataset.act==="inspect")return openInspect(g[0],true);
       if(b.dataset.act==="sell"){const it=pickOne(g);if(await confirmSell([it]))sell([it.uid])}
-      else if(await confirmSell(g))sell(g.map(x=>x.uid))}});
+      else if(await confirmSell(g,{bulk:true}))sell(g.map(x=>x.uid))}});
   document.querySelectorAll("#inv [data-g]").forEach(d=>{const a=d.querySelector(".art");if(a)a.onclick=()=>openInspect(groups[+d.dataset.g][0],true)});
 }
 document.querySelectorAll("[data-invtab]").forEach((b,i,all)=>{b.onclick=()=>{invTab=b.dataset.invtab;renderInv()};
@@ -1068,19 +1118,19 @@ function ask(msg,o={}){return new Promise(res=>{const d=$("#askDlg");if(d.open){
   yes.onclick=()=>done(true);no.onclick=()=>done(false);d.oncancel=e=>{e.preventDefault();done(false)};
   d.showModal();(only||!m[2]?yes:no).focus()})}
 function alert(msg){return ask(String(msg),{alertOnly:true})}
-function confirmSell(items){items=items.filter(Boolean);if(!items.length)return Promise.resolve(false);
+function confirmSell(items,o={}){items=items.filter(Boolean);if(!items.length)return Promise.resolve(false);
   let skip=false;try{skip=sessionStorage.getItem("pullbox:skipSellConfirm")==="1"}catch(e){}
-  if(skip&&items.length===1)return Promise.resolve(true);
+  if(skip&&items.length===1&&!o.bulk)return Promise.resolve(true);
   const tot=items.reduce((a,b)=>a+b.value,0),graded=items.filter(i=>i.graded).length;
   $("#sellMsg").innerHTML=items.length===1?`Sell <b>${graded?"PSA 10 ":""}${esc(items[0].name)}</b> for <b style="color:var(--ok)">${fmt(tot)}</b>?`:`Sell <b>${items.length} cards</b> for <b style="color:var(--ok)">${fmt(tot)}</b>?`;
   $("#sellNote").textContent=graded?(items.length===1?"This is a graded slab. Once sold, it's gone from your inventory.":`${graded} of these are graded slabs. Sold cards are gone from your inventory.`):"Sold cards are gone from your inventory.";
-  $("#sellYes").textContent=`Sell for ${fmt(tot)}`;$("#sellSkip").checked=false;$("#sellSkip").closest("label").hidden=items.length!==1;
+  $("#sellYes").textContent=`Sell for ${fmt(tot)}`;$("#sellSkip").checked=false;$("#sellSkip").closest("label").hidden=items.length!==1||!!o.bulk;
   const d=$("#sellDlg");d.showModal();$("#sellNo").focus();
   return new Promise(res=>{const done=ok=>{if(ok&&$("#sellSkip").checked){try{sessionStorage.setItem("pullbox:skipSellConfirm","1")}catch(e){}}
       d.oncancel=null;d.close();res(ok)};
     $("#sellYes").onclick=()=>done(true);$("#sellNo").onclick=()=>done(false);d.oncancel=e=>{e.preventDefault();done(false)}})}
 $("#invSort").onchange=renderInv;
-$("#sellAll").onclick=async()=>{const prot=protectedUids();const list=state.inv.filter(i=>!i.graded&&!prot.has(i.uid));if(!list.length){alert("There are no non-graded cards to sell. Cards in a binder or your showcase are skipped.");return}if(await confirmSell(list))sell(list.map(i=>i.uid))};
+$("#sellAll").onclick=async()=>{const prot=protectedUids();const list=state.inv.filter(i=>!i.graded&&!prot.has(i.uid));if(!list.length){alert("There are no non-graded cards to sell. Cards in a binder or your showcase are skipped.");return}if(await confirmSell(list,{bulk:true}))sell(list.map(i=>i.uid))};
 $("#resetAll").onclick=async()=>{if(await ask("Reset your balance to $1,000 and clear inventory and stats?")){state=Object.assign(STATE_DEFAULT(),{muted:state.muted,badges:state.badges,daily:state.daily,collected:{}});save();renderBal();renderFeed();renderInv()}};
 
 /* ---------- price editor ---------- */
@@ -1190,10 +1240,17 @@ function statFor(st,crit){const iv=()=>st.inv.reduce((a,b)=>a+b.value,0);
     case"graded":return st.graded||0;case"tier":return st.maxTier==null?-1:st.maxTier;case"inventory":return iv();case"profit":return (st.sold||0)+iv()-(st.spent||0);case"completed":return CASES.filter(cs=>completion(cs,st).done).length;case"battleWins":return st.battleWins||0;case"tradeups":return st.tradeups||0;case"upgradeWins":return st.upgradeWins||0;case"streak":return st.daily?st.daily.streak||0:0;default:return -Infinity}}
 function checkBadges(silent){const out=[];for(const b of BADGES){if(state.badges[b.id]||b.crit==="manual"||!CRITS[b.crit])continue;if(statFor(state,b.crit)>=(+b.th||0)){state.badges[b.id]=Date.now();out.push(b)}}
   if(out.length){save();if(!silent)showToasts(out);if(!$("#v-profile").hidden)renderProfile(true)}return out}
-function notify(icon,kicker,title,desc){const box=$("#toasts");const t=document.createElement("div");t.className="toast";
-  t.innerHTML=`${icon}<div style="min-width:0"><small style="color:var(--gold);font-weight:700">${esc(kicker)}</small><b style="display:block;font-family:var(--display)">${esc(title)}</b><small style="color:var(--muted)">${esc(desc)}</small></div>`;
+const TQ=[];let tShown=0;
+{const sm=HTMLDialogElement.prototype.showModal;HTMLDialogElement.prototype.showModal=function(){sm.call(this);const box=$("#toasts");
+  if(box&&box.children.length&&box.showPopover){try{if(box.matches(":popover-open"))box.hidePopover();box.showPopover()}catch(e){}}}}
+function notify(icon,kicker,title,desc){TQ.push({icon,kicker,title,desc});pumpToasts()}
+function pumpToasts(){const max=matchMedia("(max-height:520px), (max-width:640px)").matches?1:3;while(tShown<max&&TQ.length)showToast(TQ.shift())}
+function showToast(o){const box=$("#toasts");const t=document.createElement("button");t.type="button";t.className="toast";t.setAttribute("aria-label",`${o.kicker}: ${o.title}. Tap to dismiss.`);tShown++;
+  t.innerHTML=`${o.icon}<span class="tx"><small class="tk">${esc(o.kicker)}</small><b>${esc(o.title)}</b><small class="td">${esc(o.desc)}</small></span>`;
   box.appendChild(t);try{if(box.showPopover){if(box.matches(":popover-open"))box.hidePopover();box.showPopover()}}catch(e){}
-  chime(2);setTimeout(()=>{t.style.transition="opacity .4s";t.style.opacity="0";setTimeout(()=>{t.remove();if(!box.children.length){try{if(box.hidePopover&&box.matches(":popover-open"))box.hidePopover()}catch(e){}}},400)},5000)}
+  chime(2);let gone=false;const kill=()=>{if(gone)return;gone=true;t.style.transition="opacity .3s";t.style.opacity="0";
+    setTimeout(()=>{t.remove();tShown--;if(!box.children.length&&!TQ.length){try{if(box.hidePopover&&box.matches(":popover-open"))box.hidePopover()}catch(e){}}pumpToasts()},300)};
+  t.onclick=kill;setTimeout(kill,TQ.length?3000:4500)}
 function showToasts(list){list.forEach((b,i)=>setTimeout(()=>notify(badgeHTML(b,46,false),"Badge unlocked",b.name,b.desc||""),i*700))}
 
 /* ---------- profiles ---------- */
@@ -1649,7 +1706,7 @@ function showBattleResult(){const r=$("#btResult");const loot=BT.loot,won=BT.win
       <div class="row-flex" style="justify-content:center"><button class="btn" id="btNew">Change settings</button><button class="btn-gold" id="btAgain">Battle again</button></div>`}</div>`;
   const finish=()=>{BT.players=null;BT.winner=null;BT.loot=null;spinning=false;updateOpenBtn()};
   if(won){$("#btKeep").onclick=()=>{loot.forEach(it=>state.inv.unshift(it));save();finish();renderBattle();checkBadges()};
-    $("#btSell").onclick=async()=>{if(!(await confirmSell(loot)))return;state.balance=round2(state.balance+val);state.sold=round2(state.sold+val);track("sell",val);save();renderBal();finish();renderBattle();checkBadges()};
+    $("#btSell").onclick=async()=>{if(!(await confirmSell(loot,{bulk:true})))return;state.balance=round2(state.balance+val);state.sold=round2(state.sold+val);track("sell",val);save();renderBal();finish();renderBattle();checkBadges()};
     $("#btKeep").focus()}
   else{$("#btNew").onclick=()=>{finish();renderBattle()};$("#btAgain").onclick=()=>{finish();renderBattle();const g=$("#btGo");if(g&&!g.disabled)startBattle()}}}
 
@@ -1709,6 +1766,18 @@ async function upSpin(sv,tv,chance,tEntry,stakeIt){if(UP.busy||spinning||!chance
     state.balance=round2(state.balance+tv);state.sold=round2(state.sold+tv);UP.msg=`<span style="color:var(--ok)">You won ${fmt(tv)}!</span>`;chime(3)}
   else UP.msg=`<span style="color:var(--red)">No luck this time. Your ${UP.stake==="card"?"card is":"cash is"} gone.</span>`;
   spinning=false;save();renderBal();updateOpenBtn();renderUpgrader();checkBadges()}
+
+/* ---------- app mode: auto-hiding top bar + landscape lock ---------- */
+if(window.PULLBOX_APP){document.documentElement.classList.add("app");
+  const hdr=$("header");let lastY=scrollY,acc=0;
+  addEventListener("scroll",()=>{const y=scrollY,dy=y-lastY;lastY=y;
+    if(y<60){hdr.classList.remove("hide");acc=0;return}
+    if(!$("#themePop").hidden||!$("#profPop").hidden)return;
+    if((dy>0)!==(acc>0))acc=0;acc+=dy;
+    if(acc>30)hdr.classList.add("hide");else if(acc<-30)hdr.classList.remove("hide")},{passive:true});
+  const lock=()=>{try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("landscape").catch(()=>{})}catch(e){}};
+  lock();addEventListener("pointerdown",lock,{once:true});
+}
 
 /* ---------- themes ---------- */
 const THEMES=[["auto","Match system",["#171b21","#eef0f4"]],["dark","Dark",["#171b21","#2a303a"]],["light","Light",["#eef0f4","#ffffff"]],["grey","Grey",["#2a2a2c","#3d3d41"]],["blue","Blue",["#0d1b2e","#1a3150"]],["midnight","Midnight black",["#000000","#171717"]],["crimson","Crimson",["#1d1214","#321e22"]],["forest","Forest",["#121a15","#203026"]],["synth","Synthwave",["#17122a","#3d2670"]]];
