@@ -139,6 +139,7 @@ h2{font-size:26px}
 /* uploaded card images */
 .art.has-img{background:#0d1014}
 .art.has-img::before,.art.has-img::after{display:none}
+.art.has-img.holo::after{display:block;z-index:1;pointer-events:none}
 .art .cimg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .thumb{width:44px;height:61px;border-radius:3px;background:var(--panel-2);display:inline-block;vertical-align:middle;overflow:hidden;margin-right:8px;position:relative}
 .thumb .art{position:absolute;inset:0}
@@ -388,6 +389,33 @@ html.app header.hide{transform:translateY(calc(-100% - env(safe-area-inset-top,0
   .dtrack{margin:8px 0}
   .dday{aspect-ratio:auto;padding:8px 2px}
 }
+@media (max-height:520px) and (orientation:landscape){
+  /* card reveal: side by side, card sized to the screen height */
+  #reveal{max-width:min(660px,96vw)}
+  .reveal{--ch:min(250px,calc(100dvh - 76px));display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:22px;align-items:center;text-align:center;padding:14px 20px}
+  .reveal>*{grid-column:2}
+  .reveal>.glow{grid-column:1/-1}
+  .reveal>.bigcard{grid-column:1;grid-row:1/span 8;margin:0;width:calc(var(--ch) * 63 / 88)}
+  .reveal>.bigcard.slab{width:calc((var(--ch) - 44px) * 63 / 88 + 12px)}
+  .reveal .bigcard .art{height:var(--ch)}
+  .reveal .bigcard.slab .art{height:calc(var(--ch) - 44px)}
+  .reveal .bigcard .cardname{font-size:12px;padding:6px 8px}
+  .reveal h3{font-size:20px;margin:2px 0}
+  .reveal .val{font-size:26px;margin-top:6px}
+  .reveal .mult{min-height:0}
+  .reveal .linkbtn{justify-self:center;padding:2px 0}
+  .reveal .btns{margin-top:8px}
+  /* 3D inspect: viewing area fills the screen height */
+  #inspect{max-width:min(900px,96vw)}
+  #inspect .insp{grid-template-columns:minmax(0,1fr) 250px}
+  #inspect .stage{height:calc(100dvh - 22px)}
+  #inspect .insp-info{padding:12px 14px;gap:6px;max-height:calc(100dvh - 22px);overflow:auto}
+  .insp-info h3{font-size:18px}
+  .insp-info dl{font-size:13px;margin:2px 0}
+  .insp-info .btns{gap:6px}
+  .insp-info .btns .btn,.insp-info .btns .btn-gold{padding:6px;font-size:13px}
+  .zoomhint{display:none}
+}
 /* missions */
 .mlist{display:grid;gap:8px;margin:10px 0 6px}
 .mrow{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
@@ -595,7 +623,7 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
 
   <section id="v-cases">
     <h2>Pick a case</h2>
-    <p class="sub">Every card is priced from sold listings. Cheaper cards drop more often, and any pull has a separate small chance of arriving as a PSA 10 slab worth its graded price.</p>
+    <p class="sub">Every card is priced from sold listings. Cheaper cards drop more often, and any pull has a separate small chance of arriving as a BSA 10 slab worth its graded price.</p>
     <div class="cases" id="caseGrid"></div>
   </section>
 
@@ -684,12 +712,12 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
   <section id="v-prices" hidden>
     <h2>Price data</h2>
     <p class="note">Card images are built in: matching TCGplayer product images are used where available, with high-resolution card scans as fallbacks. Images, prices and cases can be changed in the Admin panel.</p>
-    <p class="note">Prices are a built-in snapshot estimated from eBay and TCGplayer sold listings and PSA auction records, not live data. Gem chance is the probability a pull of that card comes out as a PSA 10.</p>
+    <p class="note">Prices are a built-in snapshot estimated from eBay and TCGplayer sold listings and graded-card auction records, not live data. Gem chance is the probability a pull of that card comes out as a BSA 10.</p>
     <div class="toolbar" style="margin-top:16px">
       <select id="priceCase" aria-label="Choose case"></select>
           </div>
     <div class="tbl-wrap"><table id="priceTbl"></table></div>
-    <p class="note" style="margin-top:16px">How the math works: each card's drop weight is 1 ÷ raw price<sup>0.9</sup>, so a $10,000 card is roughly 5,000 times rarer than a $2 card. Then a second roll decides whether the pull is a PSA 10 (the gem chance). Case price is set so the expected value returns <span id="rtpNote">88</span>% of what you pay (adjustable in Admin), similar to real case openers.</p>
+    <p class="note" style="margin-top:16px">How the math works: each card's drop weight is 1 ÷ raw price<sup>0.9</sup>, so a $10,000 card is roughly 5,000 times rarer than a $2 card. Then a second roll decides whether the pull is a BSA 10 (the gem chance). Case price is set so the expected value returns <span id="rtpNote">88</span>% of what you pay (adjustable in Admin), similar to real case openers.</p>
   </section>
 
   <section id="v-admin" hidden>
@@ -913,9 +941,10 @@ function tierOf(v){let t=TIERS[0];for(const x of TIERS)if(v>=x.min)t=x;return t}
 function hash(s){let h=2166136261;for(const ch of s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function artStyle(c,tier){const h=hash(c.id);const hue=h%360,hue2=(hue+60+(h>>8)%120)%360;
   return `--g:linear-gradient(${(h>>4)%360}deg,hsl(${hue} 55% 42%),hsl(${hue2} 60% 22%) 70%,${tier.hex}66);--x:${20+(h>>12)%60}%;--y:${15+(h>>16)%50}%`}
+function isHolo(c){const card=findCard(c.id)||c;if(typeof card.holo==="boolean")return card.holo;return tierOf(c.raw).min>=150}
 function findCard(id){for(const cs of CASES)for(const c of cs.cards)if(c.id===id)return c;return null}
 function imgFor(c){return IMG[c.id]||c.imgUrl||(findCard(c.id)||{}).imgUrl||IMAGE_URLS[c.id]||null}
-function artHTML(c,tier,extra=""){const src=imgFor(c);if(src)return `<div class="art has-img ${extra}" style="${artStyle(c,tier)}"><img class="cimg" src="${esc(src)}" alt="${esc(c.name)}" loading="lazy" onerror="this.parentNode.classList.remove('has-img');this.remove()"></div>`;const holo=tier.min>=150?" holo":"";return `<div class="art${holo} ${extra}" style="${artStyle(c,tier)}"></div>`}
+function artHTML(c,tier,extra=""){const src=imgFor(c);if(src)return `<div class="art has-img${isHolo(c)?" holo":""} ${extra}" style="${artStyle(c,tier)}"><img class="cimg" src="${esc(src)}" alt="${esc(c.name)}" loading="lazy" onerror="this.parentNode.classList.remove('has-img');this.remove()"></div>`;const holo=isHolo(c)?" holo":"";return `<div class="art${holo} ${extra}" style="${artStyle(c,tier)}"></div>`}
 
 function caseStats(cs){
   const cards=cs.cards.map(card);
@@ -945,7 +974,7 @@ function show(view){if(view==="admin"&&!admin)view="cases";$("header").classList
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{if(spinning)return;if(b.dataset.view==="admin"&&!admin){askPassword();return}if(b.dataset.view==="profile")viewPid=null;show(b.dataset.view)});
 
 function renderBal(){$("#bal").textContent=fmt(state.balance)}
-function renderFeed(){$("#feed").innerHTML=state.feed.length?state.feed.map(f=>`<div class="f" style="--c:${tierOf(f.raw).c}"><b>${f.graded?"★ ":""}${esc(f.name)}</b><span>${f.graded?"PSA 10, ":""}${fmt(f.value)}</span></div>`).join(""):`<div class="f" style="--c:var(--line)"><span>Your pulls will show up here</span></div>`}
+function renderFeed(){$("#feed").innerHTML=state.feed.length?state.feed.map(f=>`<div class="f" style="--c:${tierOf(f.raw).c}"><b>${f.graded?"★ ":""}${esc(f.name)}</b><span>${f.graded?"BSA 10, ":""}${fmt(f.value)}</span></div>`).join(""):`<div class="f" style="--c:var(--line)"><span>Your pulls will show up here</span></div>`}
 
 const PATTERNS={none:"",stripes:"repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 10px,transparent 10px 20px)",
   dots:"radial-gradient(rgba(255,255,255,.16) 1.5px,transparent 2px) 0 0/12px 12px",grid:"linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px) 0 0/14px 14px,linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px) 0 0/14px 14px",
@@ -1001,12 +1030,12 @@ function updateOpenBtn(){if(!current)return;const s=caseStats(current);const b=$
 
 function renderContents(s){
   const tierP={};let gradedP=0;s.list.forEach(e=>{tierP[e.tier.name]=(tierP[e.tier.name]||0)+e.p;gradedP+=e.p*e.g});
-  $("#legend").innerHTML=TIERS.filter(t=>tierP[t.name]).map(t=>`<span><i style="background:${t.c}"></i>${t.name} ${pct(tierP[t.name])}</span>`).join("")+`<span><i style="background:var(--gold);border-radius:50%"></i>Any PSA 10 ${pct(gradedP)}</span>`;
+  $("#legend").innerHTML=TIERS.filter(t=>tierP[t.name]).map(t=>`<span><i style="background:${t.c}"></i>${t.name} ${pct(tierP[t.name])}</span>`).join("")+`<span><i style="background:var(--gold);border-radius:50%"></i>Any BSA 10 ${pct(gradedP)}</span>`;
   $("#contents").innerHTML=[...s.list].sort((a,b)=>b.c.raw-a.c.raw).map(e=>`
     <div class="item" style="--c:${e.tier.c}" data-preview="${e.c.id}">${artHTML(e.c,e.tier)}
       <div class="info"><b>${esc(e.c.name)}</b><small>${esc(e.c.set)}</small>${((state.collected||{})[current?current.id:""]||{})[e.c.id]?'<span class="gotit">✓ Collected</span>':""}
       <div class="row"><span class="v">${fmt(e.c.raw)}</span><span class="o">${pct(e.p)}</span></div>
-      <div class="gr">PSA 10 ${fmt(e.c.psa10)}, ${pct(e.p*e.g)}</div></div></div>`).join("");
+      <div class="gr">BSA 10 ${fmt(e.c.psa10)}, ${pct(e.p*e.g)}</div></div></div>`).join("");
   document.querySelectorAll("[data-preview]").forEach(d=>{const e=s.list.find(x=>x.c.id===d.dataset.preview);d.querySelector(".art").onclick=()=>openInspect({id:e.c.id,name:e.c.name,set:e.c.set,imgUrl:e.c.imgUrl||null,raw:e.c.raw,psa10:e.c.psa10,graded:false,value:e.c.raw,caseName:current?current.name:"",preview:true,odds:e.p})});
 }
 
@@ -1056,7 +1085,7 @@ function reveal(r){
   state.won=round2((state.won||0)+it.value);if(it.graded)state.graded=(state.graded||0)+1;state.maxTier=Math.max(state.maxTier==null?-1:state.maxTier,TIERS.indexOf(tier));markCollected(it);if(!r.src)track("pull",it);
   save();renderFeed();
   const level=TIERS.indexOf(tier)+(it.graded?1:0);chime(Math.min(level,3));
-  const mult=it.graded?`Graded PSA 10, ${(it.psa10/it.raw).toFixed(1)}× the raw price of ${fmt(it.raw)}`:"";
+  const mult=it.graded?`Graded BSA 10, ${(it.psa10/it.raw).toFixed(1)}× the raw price of ${fmt(it.raw)}`:"";
   $("#revealBody").innerHTML=`<div class="reveal pop ${it.graded?"graded":""}" style="--c:${it.graded?"var(--gold)":tier.c}">
     <div class="glow"></div>
     <div class="tiername">${tier.name}${it.graded?" + Graded":""}</div>
@@ -1094,7 +1123,7 @@ function renderInv(){
     const tags=[nb?`📒 ${multi?nb+" in binders":"In a binder"}`:"",ns?`⭐ ${multi?ns+" showcased":"Showcased"}`:""].filter(Boolean).join(", ");
     return `<div class="item ${it.graded?"graded":""}" style="--c:${t.c}" data-g="${gi}">${multi?`<span class="stackn" aria-label="${g.length} copies">×${g.length}</span>`:""}${cardVisual(it,false)}
       <div class="info"><b>${it.graded?"★ ":""}${esc(it.name)}</b><small>${esc(it.set)}</small>${tags?`<small class="tagline">${tags}</small>`:""}
-      <div class="row"><span class="v">${fmt(it.value)}${multi?' <small style="color:var(--muted);font-weight:500;display:inline">each</small>':""}</span><span class="o">${it.graded?"PSA 10":t.name}</span></div></div>
+      <div class="row"><span class="v">${fmt(it.value)}${multi?' <small style="color:var(--muted);font-weight:500;display:inline">each</small>':""}</span><span class="o">${it.graded?"BSA 10":t.name}</span></div></div>
       <div class="actions"><button class="btn" data-gi="${gi}" data-act="inspect">Inspect</button><button class="btn" data-gi="${gi}" data-act="sell">${multi?"Sell 1":"Sell"}</button>${multi?`<button class="btn" data-gi="${gi}" data-act="sellall">Sell all</button>`:""}</div></div>`}).join("")
     :`<div class="empty" style="grid-column:1/-1">No cards yet. Open a case and choose Keep to store a pull here.</div>`;
   const pickOne=g=>g.find(x=>!prot.has(x.uid))||g[0];
@@ -1122,7 +1151,7 @@ function confirmSell(items,o={}){items=items.filter(Boolean);if(!items.length)re
   let skip=false;try{skip=sessionStorage.getItem("pullbox:skipSellConfirm")==="1"}catch(e){}
   if(skip&&items.length===1&&!o.bulk)return Promise.resolve(true);
   const tot=items.reduce((a,b)=>a+b.value,0),graded=items.filter(i=>i.graded).length;
-  $("#sellMsg").innerHTML=items.length===1?`Sell <b>${graded?"PSA 10 ":""}${esc(items[0].name)}</b> for <b style="color:var(--ok)">${fmt(tot)}</b>?`:`Sell <b>${items.length} cards</b> for <b style="color:var(--ok)">${fmt(tot)}</b>?`;
+  $("#sellMsg").innerHTML=items.length===1?`Sell <b>${graded?"BSA 10 ":""}${esc(items[0].name)}</b> for <b style="color:var(--ok)">${fmt(tot)}</b>?`:`Sell <b>${items.length} cards</b> for <b style="color:var(--ok)">${fmt(tot)}</b>?`;
   $("#sellNote").textContent=graded?(items.length===1?"This is a graded slab. Once sold, it's gone from your inventory.":`${graded} of these are graded slabs. Sold cards are gone from your inventory.`):"Sold cards are gone from your inventory.";
   $("#sellYes").textContent=`Sell for ${fmt(tot)}`;$("#sellSkip").checked=false;$("#sellSkip").closest("label").hidden=items.length!==1||!!o.bulk;
   const d=$("#sellDlg");d.showModal();$("#sellNo").focus();
@@ -1141,17 +1170,17 @@ function renderPrices(){
   $("#rtpNote").textContent=settings.rtp;
   const cs=CASES.find(c=>c.id===sel.value);if(!cs){$("#priceTbl").innerHTML="";return}
   const s=caseStats(cs);
-  $("#priceTbl").innerHTML=`<thead><tr><th>Card</th><th>Tier</th><th>Raw sold</th><th>PSA 10 sold</th><th>Gem chance</th><th>Drop odds</th><th>PSA 10 odds</th></tr></thead><tbody>`+
+  $("#priceTbl").innerHTML=`<thead><tr><th>Card</th><th>Tier</th><th>Holo</th><th>Raw sold</th><th>BSA 10 sold</th><th>Gem chance</th><th>Drop odds</th><th>BSA 10 odds</th></tr></thead><tbody>`+
     s.list.map(e=>`<tr><td><span class="thumb">${artHTML(e.c,e.tier)}</span><span style="display:inline-block;vertical-align:middle">${esc(e.c.name)}<br><small style="color:var(--muted)">${esc(e.c.set)}</small></span></td>
-      <td><span class="tb" style="background:${e.tier.c}"></span>${e.tier.name}</td><td>${fmt(e.c.raw)}</td><td>${fmt(e.c.psa10)}</td><td>${e.c.gem}%</td><td>${pct(e.p)}</td><td>${pct(e.p*e.g)}</td></tr>`).join("")+
-    `</tbody><tfoot><tr><th colspan="7">Case price ${fmt(s.price)}${cs.fixedPrice>0?" (fixed)":""}, expected value ${fmt(s.ev)}</th></tr></tfoot>`;
+      <td><span class="tb" style="background:${e.tier.c}"></span>${e.tier.name}</td><td>${isHolo(e.c)?"✓":""}</td><td>${fmt(e.c.raw)}</td><td>${fmt(e.c.psa10)}</td><td>${e.c.gem}%</td><td>${pct(e.p)}</td><td>${pct(e.p*e.g)}</td></tr>`).join("")+
+    `</tbody><tfoot><tr><th colspan="8">Case price ${fmt(s.price)}${cs.fixedPrice>0?" (fixed)":""}, expected value ${fmt(s.ev)}</th></tr></tfoot>`;
 }
 $("#priceCase").onchange=renderPrices;
 
 /* ---------- misc ---------- */
 $("#addFunds").onclick=()=>{state.balance=Math.round((state.balance+500)*100)/100;save();renderBal();updateOpenBtn()};
 /* ---------- 3D inspect ---------- */
-const V={rx:-8,ry:-22,z:1,vx:0,vy:0,drag:false,spin:false,raf:0,tween:null,pts:new Map(),pinch:0};
+const V={fit:1,ow:250,oh:349,rx:-8,ry:-22,z:1,vx:0,vy:0,drag:false,spin:false,raf:0,tween:null,pts:new Map(),pinch:0};
 function cuboid(W,H,D,front,back,edgeCls,extra=""){const h=D/2;
   return `<div class="face ${edgeCls}" style="width:${D}px;height:${H}px;left:${(W-D)/2}px;transform:rotateY(90deg) translateZ(${W/2}px)"></div>
   <div class="face ${edgeCls}" style="width:${D}px;height:${H}px;left:${(W-D)/2}px;transform:rotateY(-90deg) translateZ(${W/2}px)"></div>
@@ -1160,26 +1189,26 @@ function cuboid(W,H,D,front,back,edgeCls,extra=""){const h=D/2;
   ${extra}
   <div class="face" style="width:${W}px;height:${H}px;transform:translateZ(${h}px)">${front}</div>
   <div class="face" style="width:${W}px;height:${H}px;transform:rotateY(180deg) translateZ(${h}px)">${back}</div>`}
-function cardFront(it,tier){const src=imgFor(it);const holo=tier.min>=150||it.graded?`<div class="holo3d"></div>`:"";
+function cardFront(it,tier){const src=imgFor(it);const holo=isHolo(it)?`<div class="holo3d"></div>`:"";
   return `<div class="cface" style="position:absolute;inset:0"><div class="art" style="${artStyle(it,tier)}"></div><div class="gname">${esc(it.name)}</div>${src?`<img src="${esc(src)}" alt="${esc(it.name)}" onerror="this.remove()">`:""}${holo}<div class="glare"></div></div>`}
 const cardBack=`<div class="cback" style="position:absolute;inset:0"><span>PULLBOX</span></div>`;
 function openInspect(it,fromInv){if(!it)return;const tier=tierOf(it.raw);const c=it.graded?"var(--gold)":tier.c;
   const body=$("#inspBody");body.style.setProperty("--c",c);
-  const small=matchMedia("(max-width:760px)").matches;const k=small?0.8:1;
+  const k=1;
   let html;
-  if(!it.graded){const W=Math.round(250*k),H=Math.round(349*k);html=cuboid(W,H,3,cardFront(it,tier),cardBack,"edge");$("#obj").style.cssText=`width:${W}px;height:${H}px`}
-  else{const W=Math.round(290*k),H=Math.round(478*k),D=18,cw=Math.round(236*k),ch=Math.round(330*k),cx=(W-cw)/2,cy=Math.round(104*k);
+  if(!it.graded){const W=Math.round(250*k),H=Math.round(349*k);V.ow=W;V.oh=H;html=cuboid(W,H,3,cardFront(it,tier),cardBack,"edge");$("#obj").style.cssText=`width:${W}px;height:${H}px;position:absolute;left:calc(50% - ${W/2}px);top:calc(50% - ${H/2}px)`}
+  else{const W=Math.round(290*k),H=Math.round(478*k),D=18,cw=Math.round(236*k),ch=Math.round(330*k),cx=(W-cw)/2,cy=Math.round(104*k);V.ow=W;V.oh=H;
     const inner=`<div class="face" style="width:${cw}px;height:${ch}px;left:${cx}px;top:${cy}px;transform:translateZ(1px)">${cardFront(it,tier)}</div>
       <div class="face" style="width:${cw}px;height:${ch}px;left:${cx}px;top:${cy}px;transform:rotateY(180deg) translateZ(1px)">${cardBack}</div>`;
     const label=`<div class="slab-label"><div style="min-width:0"><b>${esc(it.name)}</b>${esc(it.set)}<br>#${esc(it.cert||"")}</div><em>10<small>GEM MINT</small></em></div>`;
     const blabel=`<div class="slab-label" style="justify-content:center;align-items:center;font-size:13px">Cert #${esc(it.cert||"")}</div>`;
     html=cuboid(W,H,D,`<div class="sface" style="position:absolute;inset:0">${label}<div class="glare"></div></div>`,`<div class="sface" style="position:absolute;inset:0">${blabel}</div>`,"sedge",inner);
-    $("#obj").style.cssText=`width:${W}px;height:${H}px`}
+    $("#obj").style.cssText=`width:${W}px;height:${H}px;position:absolute;left:calc(50% - ${W/2}px);top:calc(50% - ${H/2}px)`}
   $("#obj").innerHTML=html;
   const mult=it.graded?`${(it.psa10/it.raw).toFixed(1)}× raw`:"";
   $("#inspInfo").innerHTML=`<div class="tiername">${tier.name}${it.graded?" + Graded":""}</div><h3>${esc(it.name)}</h3><div style="color:var(--muted);font-size:14px">${esc(it.set)}</div>
     <dl><dt>${it.preview?"Raw value":"Value"}</dt><dd style="color:var(--ok)">${fmt(it.value)}</dd>
-    ${it.graded?`<dt>Grade</dt><dd>PSA 10, ${mult}</dd><dt>Cert</dt><dd>#${esc(it.cert)}</dd>`:`<dt>PSA 10 value</dt><dd>${fmt(it.psa10)}</dd>`}
+    ${it.graded?`<dt>Grade</dt><dd>BSA 10, ${mult}</dd><dt>Cert</dt><dd>#${esc(it.cert)}</dd>`:`<dt>BSA 10 value</dt><dd>${fmt(it.psa10)}</dd>`}
     ${it.preview?`<dt>Drop odds</dt><dd>${pct(it.odds)}</dd>`:""}
     ${it.caseName?`<dt>${it.preview?"Case":"Pulled from"}</dt><dd>${esc(it.caseName)}</dd>`:""}
     ${it.at?`<dt>Pulled</dt><dd>${new Date(it.at).toLocaleDateString()}</dd>`:""}</dl>
@@ -1188,7 +1217,10 @@ function openInspect(it,fromInv){if(!it)return;const tier=tierOf(it.raw);const c
   $("#inFlip").onclick=()=>{V.spin=false;$("#inSpin").setAttribute("aria-pressed","false");V.tween={from:V.ry,to:Math.round((V.ry+180)/180)*180,t:0}};
   $("#inSpin").onclick=e=>{V.spin=!V.spin;e.currentTarget.setAttribute("aria-pressed",String(V.spin))};
   $("#inReset").onclick=resetView;$("#inClose").onclick=()=>$("#inspect").close();
-  const d=$("#inspect");d.showModal();$("#stage").focus();cancelAnimationFrame(V.raf);V.raf=requestAnimationFrame(frame)}
+  const d=$("#inspect");d.showModal();fitInspect();$("#stage").focus();cancelAnimationFrame(V.raf);V.raf=requestAnimationFrame(frame)}
+function fitInspect(){const st=$("#stage");if(!st)return;const r=st.getBoundingClientRect();if(!r.width||!r.height)return;
+  V.fit=Math.min(1,(r.height*0.74)/V.oh,(r.width*0.74)/V.ow)}
+addEventListener("resize",()=>{if($("#inspect").open)fitInspect()});
 function resetView(){V.tween={from:V.ry,to:-22,t:0,rxFrom:V.rx,zFrom:V.z}}
 function frame(){if(!$("#inspect").open)return;
   const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1196,7 +1228,7 @@ function frame(){if(!$("#inspect").open)return;
     if(tw.rxFrom!==undefined){V.rx=tw.rxFrom+(-8-tw.rxFrom)*e;V.z=tw.zFrom+(1-tw.zFrom)*e}if(tw.t>=1)V.tween=null}
   else if(!V.drag){if(V.spin)V.ry+=reduce?0.2:0.6;V.ry+=V.vy;V.rx+=V.vx;V.vx*=0.93;V.vy*=0.93;if(Math.abs(V.vx)<0.01)V.vx=0;if(Math.abs(V.vy)<0.01)V.vy=0}
   V.rx=Math.max(-75,Math.min(75,V.rx));
-  const o=$("#obj");o.style.transform=`scale(${V.z}) rotateX(${V.rx}deg) rotateY(${V.ry}deg)`;
+  const o=$("#obj");o.style.transform=`scale(${V.z*V.fit}) rotateX(${V.rx}deg) rotateY(${V.ry}deg)`;
   const ry=((V.ry%360)+360)%360,rad=ry*Math.PI/180;
   o.style.setProperty("--gx",(50-Math.sin(rad)*70)+"%");o.style.setProperty("--gy",(40+V.rx*0.9)+"%");
   o.style.setProperty("--hp",(50+Math.sin(rad)*60+V.rx*0.5)+"%");o.style.setProperty("--ho",String(0.08+Math.min(0.32,Math.abs(Math.sin(rad))*0.45+Math.abs(V.rx)/200)));
@@ -1220,11 +1252,12 @@ function frame(){if(!$("#inspect").open)return;
 /* ---------- badges ---------- */
 const SHAPES=[["circle","Circle"],["rounded","Rounded square"],["shield","Shield"],["hex","Hexagon"],["octagon","Octagon"],["diamond","Diamond"],["star","Star"]];
 const CRITS={opened:{n:"Cases opened"},spent:{n:"Total spent on cases",money:true},bestPull:{n:"Best single pull",money:true},totalWon:{n:"Total value pulled",money:true},
-  graded:{n:"PSA 10s unboxed"},tier:{n:"Highest rarity tier pulled"},inventory:{n:"Inventory value",money:true},profit:{n:"Net profit",money:true},completed:{n:"Cases completed"},battleWins:{n:"Case battles won"},tradeups:{n:"Trade-ups completed"},upgradeWins:{n:"Upgrades won"},streak:{n:"Daily reward streak (days)"},manual:{n:"Only when an admin awards it"}};
-const BADGES_BUILTIN=[{"id":"b-first","name":"First Pull","desc":"Open your first case.","crit":"opened","th":1,"emblem":"🎴","shape":"circle","color":"#b87333","look":{"mode":"gradient","colors":["#f0b27a","#8a4b1f"],"angle":150,"pattern":"none","glow":0}},{"id":"b-vet","name":"Veteran","desc":"Open 100 cases.","crit":"opened","th":100,"emblem":"🎖️","shape":"shield","color":"#9aa3b0","look":{"mode":"gradient","colors":["#f1f4f8","#8a94a3","#4b5563"],"angle":160,"pattern":"diamonds","glow":0,"shine":true}},{"id":"b-roller","name":"High Roller","desc":"Spend $1,000 on cases.","crit":"spent","th":1000,"emblem":"💸","shape":"hex","color":"#2f9e5b","look":{"mode":"gradient","colors":["#6ee7a8","#15803d"],"angle":150,"pattern":"dots","glow":8}},{"id":"b-bighit","name":"Big Hit","desc":"Pull a single card worth $500 or more.","crit":"bestPull","th":500,"emblem":"🔥","shape":"shield","color":"#eb4b4b","look":{"mode":"gradient","colors":["#ffb347","#eb4b4b","#7a1020"],"angle":170,"pattern":"none","glow":12}},{"id":"b-grand","name":"Four Figures","desc":"Pull a single card worth $1,000 or more.","crit":"bestPull","th":1000,"emblem":"$","shape":"hex","color":"#e4ae39","look":{"mode":"flow","colors":["#7a5810","#f0c14f","#fff2c2","#c8921e"],"angle":110,"speed":5,"pattern":"diamonds","glow":14,"shine":true}},{"id":"b-grail","name":"Grail Hunter","desc":"Pull a single card worth $10,000 or more.","crit":"bestPull","th":10000,"emblem":"✨","shape":"star","color":"#9b5cff","look":{"mode":"flow","colors":["#ff3b3b","#ff9f1c","#ffe45c","#3ddc84","#3b8bff","#9b5cff"],"angle":90,"speed":4,"pattern":"none","glow":1,"shine":true,"float":false,"pulse":true,"band":true,"latchOn":true,"latch":"#d8dde5","emblem":""}},{"id":"b-legend","name":"Legendary","desc":"Pull a Legendary-tier card.","crit":"tier","th":4,"emblem":"👑","shape":"octagon","color":"#e4ae39","look":{"mode":"gradient","colors":["#fff2c2","#e4ae39","#8a6212"],"angle":160,"pattern":"sparkle","glow":16,"shine":true}},{"id":"b-gem","name":"Gem Mint","desc":"Unbox your first PSA 10.","crit":"graded","th":1,"emblem":"💎","shape":"diamond","color":"#6dd5fa","look":{"mode":"gradient","colors":["#e0f7ff","#6dd5fa","#2980b9"],"angle":150,"pattern":"grid","glow":12,"shine":true}},{"id":"b-slabs","name":"Slab Stacker","desc":"Unbox 10 PSA 10s.","crit":"graded","th":10,"emblem":"10","shape":"rounded","color":"#c8102e","look":{"mode":"gradient","colors":["#ff6b6b","#c8102e"],"angle":160,"pattern":"stripes","glow":10}},{"id":"b-green","name":"In the Green","desc":"Reach $1,000 in net profit.","crit":"profit","th":1000,"emblem":"📈","shape":"circle","color":"#3ddc84","look":{"mode":"flow","colors":["#0b6b2b","#3ddc84","#b9f6ca"],"angle":120,"speed":6,"pattern":"none","glow":10}},{"id":"b-vault","name":"Vault Keeper","desc":"Hold $5,000 of cards in your inventory.","crit":"inventory","th":5000,"emblem":"🗃️","shape":"rounded","color":"#3a3f4b","look":{"mode":"gradient","colors":["#3a3f4b","#0b0c10"],"angle":160,"pattern":"carbon","glow":6}},{"id":"b-whale","name":"Whale","desc":"Pull $100,000 in total card value.","crit":"totalWon","th":100000,"emblem":"🐋","shape":"circle","color":"#302b63","look":{"mode":"flow","colors":["#0f0c29","#302b63","#8e2de2","#24243e"],"angle":135,"speed":10,"pattern":"sparkle","glow":16}},{"id":"b-founder","name":"Founder","desc":"One of the first collectors here.","crit":"manual","th":0,"emblem":"🏆","shape":"star","color":"#e4ae39","look":{"mode":"hue","colors":["#f0c14f","#c8921e"],"angle":160,"speed":8,"pattern":"none","glow":14,"shine":true}},{"id":"b-muc4vyen","name":"Tester","desc":"Congratulations, you're a loser!","crit":"manual","th":0,"emblem":"🎖️","shape":"circle","color":"#000000","look":{"mode":"flow","colors":["#ff3b3b","#ffe45c","#ffffff","#3b8bff","#9b5cff"],"angle":90,"speed":4,"pattern":"none","glow":4,"shine":true,"float":false,"pulse":false,"band":true,"latchOn":true,"latch":"#d8dde5","emblem":""}},{"id":"b-complete","name":"Completionist","desc":"Collect every card in a case.","crit":"completed","th":1,"emblem":"★","shape":"octagon","color":"#8e2de2","look":{"mode":"flow","colors":["#3b1d6e","#8e2de2","#f0c14f","#8e2de2"],"angle":120,"speed":7,"pattern":"sparkle","glow":14,"shine":true}},{"id":"b-battle","name":"Battle Victor","desc":"Win a case battle.","crit":"battleWins","th":1,"emblem":"⚔️","shape":"shield","color":"#b91c1c","look":{"mode":"gradient","colors":["#f87171","#b91c1c","#450a0a"],"angle":165,"pattern":"carbon","glow":10}},{"id":"b-tradeup","name":"Contractor","desc":"Complete a trade-up contract.","crit":"tradeups","th":1,"emblem":"📝","shape":"rounded","color":"#0f766e","look":{"mode":"gradient","colors":["#5eead4","#0f766e"],"angle":150,"pattern":"grid","glow":6}},{"id":"b-upgrade","name":"Lucky Spin","desc":"Win on the upgrader.","crit":"upgradeWins","th":1,"emblem":"🎡","shape":"circle","color":"#16a34a","look":{"mode":"hue","colors":["#4ade80","#15803d"],"angle":150,"speed":9,"pattern":"none","glow":10}},{"id":"b-streak","name":"Dedicated","desc":"Claim the daily reward 7 days in a row.","crit":"streak","th":7,"emblem":"📅","shape":"hex","color":"#e4ae39","look":{"mode":"gradient","colors":["#fde68a","#d97706"],"angle":160,"pattern":"dots","glow":10,"shine":true}}];
+  graded:{n:"BSA 10s unboxed"},tier:{n:"Highest rarity tier pulled"},inventory:{n:"Inventory value",money:true},profit:{n:"Net profit",money:true},completed:{n:"Cases completed"},battleWins:{n:"Case battles won"},tradeups:{n:"Trade-ups completed"},upgradeWins:{n:"Upgrades won"},streak:{n:"Daily reward streak (days)"},manual:{n:"Only when an admin awards it"}};
+const BADGES_BUILTIN=[{"id":"b-first","name":"First Pull","desc":"Open your first case.","crit":"opened","th":1,"emblem":"🎴","shape":"circle","color":"#b87333","look":{"mode":"gradient","colors":["#f0b27a","#8a4b1f"],"angle":150,"pattern":"none","glow":0}},{"id":"b-vet","name":"Veteran","desc":"Open 100 cases.","crit":"opened","th":100,"emblem":"🎖️","shape":"shield","color":"#9aa3b0","look":{"mode":"gradient","colors":["#f1f4f8","#8a94a3","#4b5563"],"angle":160,"pattern":"diamonds","glow":0,"shine":true}},{"id":"b-roller","name":"High Roller","desc":"Spend $1,000 on cases.","crit":"spent","th":1000,"emblem":"💸","shape":"hex","color":"#2f9e5b","look":{"mode":"gradient","colors":["#6ee7a8","#15803d"],"angle":150,"pattern":"dots","glow":8}},{"id":"b-bighit","name":"Big Hit","desc":"Pull a single card worth $500 or more.","crit":"bestPull","th":500,"emblem":"🔥","shape":"shield","color":"#eb4b4b","look":{"mode":"gradient","colors":["#ffb347","#eb4b4b","#7a1020"],"angle":170,"pattern":"none","glow":12}},{"id":"b-grand","name":"Four Figures","desc":"Pull a single card worth $1,000 or more.","crit":"bestPull","th":1000,"emblem":"$","shape":"hex","color":"#e4ae39","look":{"mode":"flow","colors":["#7a5810","#f0c14f","#fff2c2","#c8921e"],"angle":110,"speed":5,"pattern":"diamonds","glow":14,"shine":true}},{"id":"b-grail","name":"Grail Hunter","desc":"Pull a single card worth $10,000 or more.","crit":"bestPull","th":10000,"emblem":"✨","shape":"star","color":"#9b5cff","look":{"mode":"flow","colors":["#ff3b3b","#ff9f1c","#ffe45c","#3ddc84","#3b8bff","#9b5cff"],"angle":90,"speed":4,"pattern":"none","glow":1,"shine":true,"float":false,"pulse":true,"band":true,"latchOn":true,"latch":"#d8dde5","emblem":""}},{"id":"b-legend","name":"Legendary","desc":"Pull a Legendary-tier card.","crit":"tier","th":4,"emblem":"👑","shape":"octagon","color":"#e4ae39","look":{"mode":"gradient","colors":["#fff2c2","#e4ae39","#8a6212"],"angle":160,"pattern":"sparkle","glow":16,"shine":true}},{"id":"b-gem","name":"Gem Mint","desc":"Unbox your first BSA 10.","crit":"graded","th":1,"emblem":"💎","shape":"diamond","color":"#6dd5fa","look":{"mode":"gradient","colors":["#e0f7ff","#6dd5fa","#2980b9"],"angle":150,"pattern":"grid","glow":12,"shine":true}},{"id":"b-slabs","name":"Slab Stacker","desc":"Unbox 10 BSA 10s.","crit":"graded","th":10,"emblem":"10","shape":"rounded","color":"#c8102e","look":{"mode":"gradient","colors":["#ff6b6b","#c8102e"],"angle":160,"pattern":"stripes","glow":10}},{"id":"b-green","name":"In the Green","desc":"Reach $1,000 in net profit.","crit":"profit","th":1000,"emblem":"📈","shape":"circle","color":"#3ddc84","look":{"mode":"flow","colors":["#0b6b2b","#3ddc84","#b9f6ca"],"angle":120,"speed":6,"pattern":"none","glow":10}},{"id":"b-vault","name":"Vault Keeper","desc":"Hold $5,000 of cards in your inventory.","crit":"inventory","th":5000,"emblem":"🗃️","shape":"rounded","color":"#3a3f4b","look":{"mode":"gradient","colors":["#3a3f4b","#0b0c10"],"angle":160,"pattern":"carbon","glow":6}},{"id":"b-whale","name":"Whale","desc":"Pull $100,000 in total card value.","crit":"totalWon","th":100000,"emblem":"🐋","shape":"circle","color":"#302b63","look":{"mode":"flow","colors":["#0f0c29","#302b63","#8e2de2","#24243e"],"angle":135,"speed":10,"pattern":"sparkle","glow":16}},{"id":"b-founder","name":"Founder","desc":"One of the first collectors here.","crit":"manual","th":0,"emblem":"🏆","shape":"star","color":"#e4ae39","look":{"mode":"hue","colors":["#f0c14f","#c8921e"],"angle":160,"speed":8,"pattern":"none","glow":14,"shine":true}},{"id":"b-muc4vyen","name":"Tester","desc":"Congratulations, you're a loser!","crit":"manual","th":0,"emblem":"🎖️","shape":"circle","color":"#000000","look":{"mode":"flow","colors":["#ff3b3b","#ffe45c","#ffffff","#3b8bff","#9b5cff"],"angle":90,"speed":4,"pattern":"none","glow":4,"shine":true,"float":false,"pulse":false,"band":true,"latchOn":true,"latch":"#d8dde5","emblem":""}},{"id":"b-complete","name":"Completionist","desc":"Collect every card in a case.","crit":"completed","th":1,"emblem":"★","shape":"octagon","color":"#8e2de2","look":{"mode":"flow","colors":["#3b1d6e","#8e2de2","#f0c14f","#8e2de2"],"angle":120,"speed":7,"pattern":"sparkle","glow":14,"shine":true}},{"id":"b-battle","name":"Battle Victor","desc":"Win a case battle.","crit":"battleWins","th":1,"emblem":"⚔️","shape":"shield","color":"#b91c1c","look":{"mode":"gradient","colors":["#f87171","#b91c1c","#450a0a"],"angle":165,"pattern":"carbon","glow":10}},{"id":"b-tradeup","name":"Contractor","desc":"Complete a trade-up contract.","crit":"tradeups","th":1,"emblem":"📝","shape":"rounded","color":"#0f766e","look":{"mode":"gradient","colors":["#5eead4","#0f766e"],"angle":150,"pattern":"grid","glow":6}},{"id":"b-upgrade","name":"Lucky Spin","desc":"Win on the upgrader.","crit":"upgradeWins","th":1,"emblem":"🎡","shape":"circle","color":"#16a34a","look":{"mode":"hue","colors":["#4ade80","#15803d"],"angle":150,"speed":9,"pattern":"none","glow":10}},{"id":"b-streak","name":"Dedicated","desc":"Claim the daily reward 7 days in a row.","crit":"streak","th":7,"emblem":"📅","shape":"hex","color":"#e4ae39","look":{"mode":"gradient","colors":["#fde68a","#d97706"],"angle":160,"pattern":"dots","glow":10,"shine":true}}];
 let BADGES=LS.get("badges",null);if(!Array.isArray(BADGES))BADGES=clone(BADGES_BUILTIN);
 {let seen=LS.get("badgesSeen",null);if(!Array.isArray(seen))seen=BADGES.map(b=>b.id).concat(["b-first","b-vet","b-roller","b-bighit","b-grand","b-grail","b-legend","b-gem","b-slabs","b-green","b-vault","b-whale","b-founder"]);
   let added=false;BADGES_BUILTIN.forEach(b=>{if(!seen.includes(b.id)){seen.push(b.id);if(!BADGES.some(x=>x.id===b.id)){BADGES.push(clone(b));added=true}}});
+  BADGES.forEach(b=>{["name","desc"].forEach(k=>{if(typeof b[k]==="string"&&b[k].includes("PSA")){b[k]=b[k].replace(/PSA/g,"BSA");added=true}})});
   LS.set("badgesSeen",seen);if(added)try{localStorage.setItem("pullbox:badges",JSON.stringify(BADGES))}catch(e){}}
 function saveBadges(){try{localStorage.setItem("pullbox:badges",JSON.stringify(BADGES))}catch(e){alert("Browser storage is full, so this badge change won't be kept. Remove some images to free space.")}}
 function badgeLook(b){return lookOf(Object.assign({},b,{look:Object.assign({pattern:"none"},b.look||{})}))}
@@ -1315,12 +1348,12 @@ function renderProfile(noCheck){const own=!viewPid||viewPid===PID;const pid=own?
   const sc=(st.showcase||[]).map(u=>st.inv.find(i=>i.uid===u)).filter(Boolean);
   $("#scEdit").hidden=!own;$("#scEdit").textContent=sc.length?"Edit showcase":"Choose cards";
   $("#profShowcase").innerHTML=sc.length?sc.map(it=>{const t=tierOf(it.raw);return `<div class="item ${it.graded?"graded":""}" style="--c:${t.c}" data-sc="${it.uid}">${cardVisual(it,false)}
-      <div class="info"><b>${it.graded?"★ ":""}${esc(it.name)}</b><small>${esc(it.set)}</small><div class="row"><span class="v">${fmt(it.value)}</span><span class="o">${it.graded?"PSA 10":t.name}</span></div></div></div>`}).join("")
+      <div class="info"><b>${it.graded?"★ ":""}${esc(it.name)}</b><small>${esc(it.set)}</small><div class="row"><span class="v">${fmt(it.value)}</span><span class="o">${it.graded?"BSA 10":t.name}</span></div></div></div>`}).join("")
     :`<div class="empty" style="grid-column:1/-1">${own?(st.inv.length?"Pick up to 6 cards from your inventory to show off here.":"Keep some pulls in your inventory, then choose up to 6 to show off here."):"No cards showcased yet."}</div>`;
   document.querySelectorAll("[data-sc]").forEach(d=>{const it=sc.find(x=>x.uid===d.dataset.sc);const a=d.querySelector(".art");if(a)a.onclick=()=>openInspect(it,true)});
   // stats
   const invVal=st.inv.reduce((a,b)=>a+b.value,0),net=st.sold+invVal-st.spent;
-  $("#profStats").innerHTML=[["Cases opened",st.opened],["Inventory value",fmt(invVal)],["PSA 10s unboxed",st.graded||0],
+  $("#profStats").innerHTML=[["Cases opened",st.opened],["Inventory value",fmt(invVal)],["BSA 10s unboxed",st.graded||0],
     ["Best pull",st.best?`${st.best.graded?"★ ":""}${fmt(st.best.value)}`:"None yet"],
     ["Net result",`<span style="color:${net>=0?"var(--ok)":"var(--red)"}">${net>=0?"+":"−"}${fmt(Math.abs(net))}</span>`]]
     .map(([k,v])=>`<div class="stat"><small>${k}</small><strong>${v}</strong></div>`).join("");
@@ -1342,7 +1375,7 @@ function renderScPicker(){const list=[...state.inv].sort((a,b)=>b.value-a.value)
   $("#scCount").textContent=`${scSel.length} of ${SC_MAX} selected. Your most valuable cards are listed first.`;
   $("#scList").innerHTML=list.length?list.map(it=>{const t=tierOf(it.raw),sel=scSel.includes(it.uid),full=!sel&&scSel.length>=SC_MAX;
     return `<button class="item ${it.graded?"graded":""}${sel?" sel":""}" style="--c:${t.c}" data-pick="${it.uid}" aria-pressed="${sel}" ${full?"disabled":""}><span class="tick">${sel?"✓":""}</span>${cardVisual(it,false)}
-      <span class="info"><b>${it.graded?"★ ":""}${esc(it.name)}</b><small>${esc(it.set)}</small><span class="row"><span class="v">${fmt(it.value)}</span><span class="o">${it.graded?"PSA 10":t.name}</span></span></span></button>`}).join("")
+      <span class="info"><b>${it.graded?"★ ":""}${esc(it.name)}</b><small>${esc(it.set)}</small><span class="row"><span class="v">${fmt(it.value)}</span><span class="o">${it.graded?"BSA 10":t.name}</span></span></span></button>`}).join("")
     :'<div class="empty" style="grid-column:1/-1">Your inventory is empty. Open a case and choose Keep to add cards.</div>';
   document.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const u=b.dataset.pick;if(scSel.includes(u))scSel=scSel.filter(x=>x!==u);else if(scSel.length<SC_MAX)scSel.push(u);
     const top=$("#scList").scrollTop;renderScPicker();$("#scList").scrollTop=top;const nb=document.querySelector(`[data-pick="${u}"]`);if(nb)nb.focus()})}
@@ -1355,7 +1388,7 @@ const invOf=st=>st.inv.reduce((a,b)=>a+b.value,0);
 const LB=[
   {k:"inv",n:"Most valuable inventory",f:st=>invOf(st),money:true,sub:st=>`${st.inv.length} card${st.inv.length===1?"":"s"}`,empty:"No one is holding any cards yet."},
   {k:"opened",n:"Most cases unboxed",f:st=>st.opened||0,unit:" cases",empty:"No cases have been opened yet."},
-  {k:"best",n:"Highest value pull",f:st=>st.best?st.best.value:0,money:true,sub:st=>st.best?`${st.best.graded?"PSA 10 ":""}${st.best.name}`:"",empty:"No one has pulled a card yet."},
+  {k:"best",n:"Highest value pull",f:st=>st.best?st.best.value:0,money:true,sub:st=>st.best?`${st.best.graded?"BSA 10 ":""}${st.best.name}`:"",empty:"No one has pulled a card yet."},
   {k:"lost",n:"Most money lost",f:st=>(st.spent||0)-(st.sold||0)-invOf(st),money:true,neg:true,sub:st=>`Spent ${fmt(st.spent||0)}, got back ${fmt((st.sold||0)+invOf(st))}`,empty:"Nobody is down money right now."}];
 let lbTab="inv";
 function renderLeader(){
@@ -1472,7 +1505,7 @@ function renderPicker(){const list=[...PK.items].sort((a,b)=>b.value-a.value);
   $("#pkSave").hidden=PK.max===1;$("#pkSave").disabled=!PK.sel.length;
   $("#pkList").innerHTML=list.length?list.map(it=>{const t=tierOf(it.raw),sel=PK.sel.includes(it.uid),full=!sel&&PK.sel.length>=PK.max&&PK.max>1;
     return `<button class="item ${it.graded?"graded":""}${sel?" sel":""}" style="--c:${t.c}" data-pk="${it.uid}" aria-pressed="${sel}" ${full?"disabled":""}>${PK.max>1?`<span class="tick">${sel?"✓":""}</span>`:""}${cardVisual(it,false)}
-      <span class="info"><b>${it.graded?"★ ":""}${esc(it.name)}</b><small>${esc(it.set)}</small><span class="row"><span class="v">${fmt(it.value)}</span><span class="o">${it.graded?"PSA 10":t.name}</span></span></span></button>`}).join("")
+      <span class="info"><b>${it.graded?"★ ":""}${esc(it.name)}</b><small>${esc(it.set)}</small><span class="row"><span class="v">${fmt(it.value)}</span><span class="o">${it.graded?"BSA 10":t.name}</span></span></span></button>`}).join("")
     :`<div class="empty" style="grid-column:1/-1">${PK.empty||"No cards available."}</div>`;
   document.querySelectorAll("[data-pk]").forEach(b=>b.onclick=()=>{const u=b.dataset.pk;
     if(PK.max===1){$("#pickDlg").close();PK.onDone([u]);return}
@@ -1612,7 +1645,7 @@ function renderTrade(){const el=$("#g-trade");if(!CASES.length){el.innerHTML='<d
   const ev=outs.reduce((a,e)=>a+(e.p/tot)*((1-e.g)*e.c.raw+e.g*e.c.psa10),0);
   const minPct=settings.tuMin==null?60:settings.tuMin,minIn=outs.length?round2(ev*minPct/100):0,meetsMin=inVal+0.005>=minIn;
   const bestPossible=[...elig].sort((a,b)=>b.value-a.value).slice(0,10).reduce((a,b)=>a+b.value,0);
-  el.innerHTML=`<p class="sub">Trade 10 raw cards of the same rarity from one case for a random card of the next rarity up from that case. The result can even come back as a PSA 10. Graded slabs and cards in a binder or your showcase can't be used.</p>
+  el.innerHTML=`<p class="sub">Trade 10 raw cards of the same rarity from one case for a random card of the next rarity up from that case. The result can even come back as a BSA 10. Graded slabs and cards in a binder or your showcase can't be used.</p>
   <div class="tu"><div>
     <div class="toolbar"><label class="row-flex">Case <select id="tuCase" aria-label="Case">${CASES.map(c=>`<option value="${c.id}" ${c.id===cs.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select></label></div>
     ${valid.length?`<div class="chips" role="group" aria-label="Rarity to trade up">${valid.map(t=>`<button class="chip" data-tut="${t}" aria-pressed="${t===TU.tier}" style="--c:${TIERS[t].hex}">${TIERS[t].name} to ${TIERS[next(t)].name}</button>`).join("")}</div>`
@@ -1725,7 +1758,7 @@ function renderUpgrader(){const el=$("#g-upgrade");const prot=protectedUids();if
   <div class="up">
     <div class="up-panel"><h3 class="gsub" style="margin-top:0">Your stake</h3>
       <div class="chips">${[["card","A card"],["cash","Cash"]].map(([k,n])=>`<button class="chip" data-ups="${k}" aria-pressed="${UP.stake===k}" ${UP.busy?"disabled":""}>${n}</button>`).join("")}</div>
-      ${UP.stake==="card"?`<div class="up-pick">${stakeIt?`<div class="item ${stakeIt.graded?"graded":""}" style="--c:${tierOf(stakeIt.raw).c}">${cardVisual(stakeIt,false)}<div class="info"><b>${esc(stakeIt.name)}</b><div class="row"><span class="v">${fmt(stakeIt.value)}</span><span class="o">${stakeIt.graded?"PSA 10":tierOf(stakeIt.raw).name}</span></div></div></div>`:'<p class="note">No card chosen yet.</p>'}
+      ${UP.stake==="card"?`<div class="up-pick">${stakeIt?`<div class="item ${stakeIt.graded?"graded":""}" style="--c:${tierOf(stakeIt.raw).c}">${cardVisual(stakeIt,false)}<div class="info"><b>${esc(stakeIt.name)}</b><div class="row"><span class="v">${fmt(stakeIt.value)}</span><span class="o">${stakeIt.graded?"BSA 10":tierOf(stakeIt.raw).name}</span></div></div></div>`:'<p class="note">No card chosen yet.</p>'}
         <button class="btn" id="upPick" ${UP.busy?"disabled":""}>${stakeIt?"Change card":"Choose a card"}</button></div>`
       :`<label class="fld"><span>Amount (balance ${fmt(state.balance)})</span><input type="number" id="upCash" min="0.5" step="0.5" value="${UP.cash}" ${UP.busy?"disabled":""}></label>
         <div class="chips">${[10,50,100,500].map(v=>`<button class="chip" data-upc="${v}" ${UP.busy?"disabled":""}>${fmt(v).replace(".00","")}</button>`).join("")}<button class="chip" data-upc="max" ${UP.busy?"disabled":""}>Max</button></div>`}
@@ -1738,7 +1771,7 @@ function renderUpgrader(){const el=$("#g-upgrade");const prot=protectedUids();if
     <div class="up-panel"><h3 class="gsub" style="margin-top:0">Target</h3>
       <div class="chips">${[["card","A card"],["mult","Cash multiplier"]].map(([k,n])=>`<button class="chip" data-upt="${k}" aria-pressed="${UP.target===k}" ${UP.busy?"disabled":""}>${n}</button>`).join("")}</div>
       ${UP.target==="card"?`<input type="search" id="upQ" placeholder="Search cards" value="${esc(UP.q)}" aria-label="Search target cards" style="width:100%" ${UP.busy?"disabled":""}>
-        <div class="up-list">${sv<=0?'<p class="note">Choose your stake first.</p>':targets.length?targets.map(x=>`<button class="up-row" data-upk="${esc(x.key)}" aria-pressed="${UP.key===x.key}" style="--c:${x.graded?"var(--gold)":x.e.tier.c}" ${UP.busy?"disabled":""}>${thumb(x.e.c,x.e.tier)}<span class="t"><b>${x.graded?"★ ":""}${esc(x.e.c.name)}</b><small>${x.graded?"PSA 10, ":""}${fmt(x.value)}, ${pct(Math.min(UP_MAX,sv/x.value*UP_EDGE))}</small></span></button>`).join(""):'<p class="note">No cards are worth more than your stake.</p>'}</div>`
+        <div class="up-list">${sv<=0?'<p class="note">Choose your stake first.</p>':targets.length?targets.map(x=>`<button class="up-row" data-upk="${esc(x.key)}" aria-pressed="${UP.key===x.key}" style="--c:${x.graded?"var(--gold)":x.e.tier.c}" ${UP.busy?"disabled":""}>${thumb(x.e.c,x.e.tier)}<span class="t"><b>${x.graded?"★ ":""}${esc(x.e.c.name)}</b><small>${x.graded?"BSA 10, ":""}${fmt(x.value)}, ${pct(Math.min(UP_MAX,sv/x.value*UP_EDGE))}</small></span></button>`).join(""):'<p class="note">No cards are worth more than your stake.</p>'}</div>`
       :`<label class="fld"><span>Multiplier: ${UP.mult}× pays ${fmt(round2(sv*UP.mult))}</span><input type="range" id="upMult" min="1.5" max="50" step="0.5" value="${UP.mult}" style="accent-color:var(--gold)" ${UP.busy?"disabled":""}></label>
         <div class="chips">${[2,3,5,10,25].map(v=>`<button class="chip" data-upm="${v}" aria-pressed="${UP.mult===v}" ${UP.busy?"disabled":""}>${v}×</button>`).join("")}</div>`}
     </div></div>`;
@@ -1900,14 +1933,14 @@ async function runSearch(){const q=SRCH.q.trim();if(!q||SRCH.busy)return;SRCH.bu
   SRCH.busy=false;
   if(res===null){SRCH.status="Search couldn't reach the card databases. Check your internet connection and try again, or add the card with + Add blank card.";}
   else if(!res.length){SRCH.status=`No cards found for "${q}". Try fewer words or just the Pokémon's name. Japanese-only promos aren't in these databases, so add those with + Add blank card.`}
-  else SRCH.status=`${res.length} results from ${src}. Prices are TCGplayer market prices; the PSA 10 value is an estimate you can edit after adding.`;
+  else SRCH.status=`${res.length} results from ${src}. Prices are TCGplayer market prices; the BSA 10 value is an estimate you can edit after adding.`;
   SRCH.results=res||[];renderSearchResults()}
 function searchPanelHTML(cs){return `<div class="srch"><h3 style="font-size:17px;margin-bottom:10px">Search cards to add</h3>
   <div class="srch-bar"><input type="search" id="srchQ" data-fk="srchQ" value="${esc(SRCH.q)}" placeholder="Card name, e.g. Umbreon ex" aria-label="Search cards">
     <button class="btn" id="srchGo">Search</button>
     <select id="srchSort" aria-label="Sort results"><option value="new" ${SRCH.sort==="new"?"selected":""}>Newest sets first</option><option value="price" ${SRCH.sort==="price"?"selected":""}>Highest price first</option></select></div>
   <div class="srch-bar" style="font-size:14px;color:var(--muted)">
-    <label class="row-flex">PSA 10 estimate <input type="number" id="srchMult" min="1" max="100" step="0.5" value="${SRCH.mult}" style="width:70px" aria-label="PSA 10 multiplier">× raw</label>
+    <label class="row-flex">BSA 10 estimate <input type="number" id="srchMult" min="1" max="100" step="0.5" value="${SRCH.mult}" style="width:70px" aria-label="BSA 10 multiplier">× raw</label>
     <label class="row-flex">Gem chance <input type="number" id="srchGem" min="0" max="100" step="0.1" value="${SRCH.gem}" style="width:70px" aria-label="Gem chance for added cards">%</label>
     <details style="margin-left:auto"><summary style="cursor:pointer">API key</summary><div class="row-flex" style="margin-top:6px"><input type="password" id="srchKey" value="${esc(settings.ptcgKey||"")}" placeholder="Optional pokemontcg.io key" style="width:220px" aria-label="Pokémon TCG API key"><small>Raises the daily search limit. Free at dev.pokemontcg.io.</small></div></details></div>
   <div class="srch-status" id="srchStatus" role="status"></div>
@@ -1958,7 +1991,7 @@ function renderEditor(){
   </div>
   ${lookEditorHTML(cs)}
   <h3 style="margin:24px 0 10px">Cards in this case</h3>
-  <div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>Image</th><th>Name and set</th><th>Raw sold ($)</th><th>PSA 10 sold ($)</th><th>Gem chance (%)</th><th>Odds</th><th></th></tr></thead><tbody>
+  <div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>Image</th><th>Name and set</th><th>Raw sold ($)</th><th>BSA 10 sold ($)</th><th>Gem chance (%)</th><th>Holo-foil</th><th>Odds</th><th></th></tr></thead><tbody>
   ${s.list.map(e=>{const c=cs.cards.find(x=>x.id===e.c.id);return `<tr>
     <td class="imgcell" data-id="${c.id}"><span class="thumb">${artHTML(c,e.tier)}</span>
       <div class="upl" style="margin-top:6px"><label class="btn">${IMG[c.id]?"Replace":"Upload"}<input type="file" accept="image/*" data-img="${c.id}" aria-label="Upload image for ${esc(c.name)}"></label>${IMG[c.id]?`<button class="btn" data-rmimg="${c.id}">Remove</button>`:""}</div>
@@ -1966,9 +1999,10 @@ function renderEditor(){
     <td><input data-cid="${c.id}" data-k="name" data-fk="${c.id}-name" value="${esc(c.name)}" style="width:240px" aria-label="Card name"><br>
       <input data-cid="${c.id}" data-k="set" data-fk="${c.id}-set" value="${esc(c.set)}" placeholder="Set and number" style="width:240px;margin-top:6px" aria-label="Card set"></td>
     <td><input type="number" data-cid="${c.id}" data-k="raw" data-fk="${c.id}-raw" min="0.25" step="0.01" value="${c.raw}" aria-label="Raw price"></td>
-    <td><input type="number" data-cid="${c.id}" data-k="psa10" data-fk="${c.id}-psa" min="0.25" step="0.01" value="${c.psa10}" aria-label="PSA 10 price"></td>
+    <td><input type="number" data-cid="${c.id}" data-k="psa10" data-fk="${c.id}-psa" min="0.25" step="0.01" value="${c.psa10}" aria-label="BSA 10 price"></td>
     <td><input type="number" data-cid="${c.id}" data-k="gem" data-fk="${c.id}-gem" min="0" max="100" step="0.1" value="${c.gem}" style="width:80px" aria-label="Gem chance"></td>
-    <td><span class="tb" style="background:${e.tier.c}"></span>${e.tier.name} ${pct(e.p)}<br><small style="color:var(--gold)">PSA 10 ${pct(e.p*e.g)}</small></td>
+    <td><label class="check" style="white-space:nowrap"><input type="checkbox" data-cid="${c.id}" data-k="holo" ${isHolo(c)?"checked":""} aria-label="Holo-foil effect for ${esc(c.name)}"> Holo</label></td>
+    <td><span class="tb" style="background:${e.tier.c}"></span>${e.tier.name} ${pct(e.p)}<br><small style="color:var(--gold)">BSA 10 ${pct(e.p*e.g)}</small></td>
     <td><button class="btn danger" data-delcard="${c.id}" aria-label="Delete ${esc(c.name)}">Delete</button>${c.tcgUrl?`<br><a href="${esc(c.tcgUrl)}" target="_blank" rel="noopener" style="color:var(--gold);font-size:13px;display:inline-block;margin-top:8px">TCGplayer</a>`:""}</td></tr>`}).join("")}
   </tbody></table></div>
   <div class="toolbar" style="margin-top:12px"><button class="btn" id="addCard">+ Add blank card</button></div>
@@ -1990,6 +2024,7 @@ function renderEditor(){
     if(k==="name"){const v=inp.value.trim();if(v)c.name=v}
     else if(k==="set")c.set=inp.value.trim();
     else if(k==="imgUrl"){const v=inp.value.trim();if(v)c.imgUrl=v;else delete c.imgUrl}
+    else if(k==="holo"){c.holo=inp.checked}
     else{const v=parseFloat(inp.value);if(!isFinite(v)||v<0)return;c[k]=k==="gem"?Math.min(v,100):Math.max(round2(v),0.25)}
     commit()});
   el.querySelectorAll("[data-delcard]").forEach(b=>b.onclick=()=>{if(cs.cards.length<=1){alert("A case needs at least one card.");return}

@@ -1,5 +1,5 @@
 // Pullbox offline support. Bump VERSION whenever you upload a new index.html.
-const VERSION = "pullbox-v5";
+const VERSION = "pullbox-v7";
 const FONTS = "pullbox-fonts";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png",
