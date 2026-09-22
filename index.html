@@ -189,8 +189,9 @@ input[type=color]{width:64px;height:36px;padding:2px;background:var(--panel-2);b
 @media (max-width:640px){.sres{grid-template-columns:1fr}.sres .vars{justify-content:flex-start}}
 /* profiles */
 .prof-wrap{position:relative}
-.pchip{display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:22px;padding:3px 12px 3px 3px;font-weight:600;max-width:170px}
-.pchip>span:last-child{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pchip{display:flex;align-items:center;gap:7px;background:var(--panel-2);border:1px solid var(--line);border-radius:22px;padding:3px 8px 3px 3px;font-weight:600;max-width:230px;min-width:0}
+.pchip{overflow:hidden}
+.pchip>span:nth-child(2){overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
 .avatar{border-radius:50%;overflow:hidden;display:grid;place-items:center;flex:0 0 auto;background:var(--av,#5a7d9a);color:#fff;font:700 calc(var(--s) * .4) var(--display);width:var(--s);height:var(--s)}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .theme-pop hr{border:0;border-top:1px solid var(--line);margin:4px 0}
@@ -415,6 +416,60 @@ html.app header.hide{transform:translateY(calc(-100% - env(safe-area-inset-top,0
   .insp-info .btns .btn,.insp-info .btns .btn-gold{padding:6px;font-size:13px}
   .zoomhint{display:none}
 }
+/* levels & prestige */
+.lvpill{font:700 11px/1 var(--display);background:var(--gold);color:#1a1405;padding:3px 6px;border-radius:8px;white-space:nowrap;flex:0 0 auto}
+.lvpill.bump{animation:lvbump .6s ease}
+@keyframes lvbump{40%{transform:scale(1.25)}}
+.lvcard{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:18px}
+.lvcard h3{font-size:19px}
+.lvcard .lvsub{color:var(--muted);font-size:13px;margin-top:2px}
+.xpbar{height:10px;background:var(--panel-2);border-radius:6px;overflow:hidden;margin:10px 0 6px}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,#c8921e,#f0c14f);border-radius:6px;transition:width .4s}
+.lvrow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.lvrow b{color:var(--text)}
+.pemb{width:64px;height:64px;position:relative;display:grid;place-items:center;flex:0 0 auto}
+.pemb::before{content:"";position:absolute;inset:0;clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--pe,#4b5563);box-shadow:inset 0 0 0 3px rgba(255,255,255,.3)}
+.pemb.rainbow::before{background:linear-gradient(135deg,#ff3b3b,#ff9f1c,#ffe45c,#3ddc84,#3b8bff,#9b5cff);background-size:200% 200%;animation:caseflow 4s linear infinite}
+.pemb b{position:relative;font:700 22px var(--display);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);line-height:1}
+.pemb small{position:absolute;bottom:9px;font:700 8px var(--display);color:#fff;letter-spacing:.06em;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.pemb.sm{width:34px;height:34px}.pemb.sm b{font-size:13px}.pemb.sm small{display:none}
+.lvadm{display:flex;gap:6px;align-items:center;flex-wrap:nowrap}
+.lvadm input{width:58px}
+/* market */
+.chg{font-size:12px;font-weight:600;white-space:nowrap}
+.chg.up{color:var(--ok)}.chg.dn{color:var(--red)}
+#chartDlg{max-width:96vw;width:fit-content}
+.chartbox{width:min(680px,94vw)}
+.ch-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.ch-head h3{font-size:19px}
+.ch-head small{color:var(--muted)}
+.ch-stats{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.ch-stats div{display:flex;flex-direction:column}
+.ch-stats small{color:var(--muted);font-size:12px}
+.ch-stats b{font:700 18px var(--display)}
+.ch-ctrl{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.ch-ctrl .chips{margin:0}
+.chsvg{position:relative;margin-top:10px}
+.chsvg svg{width:100%;height:auto;display:block;touch-action:pan-y}
+.chtip{position:absolute;top:0;transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:3px 7px;font-size:12px;white-space:nowrap;pointer-events:none}
+/* special reveals */
+.flash{position:fixed;inset:0;z-index:5;pointer-events:none;background:var(--fc);animation:flash .7s ease-out forwards}
+@keyframes flash{0%{opacity:.75}100%{opacity:0}}
+.confetti{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-16px;width:8px;height:14px;border-radius:2px;animation:conf var(--d) cubic-bezier(.2,.6,.4,1) var(--dl) forwards;will-change:transform,opacity}
+@keyframes conf{0%{transform:translate(0,0) rotate(0);opacity:1}85%{opacity:1}100%{transform:translate(var(--x),105vh) rotate(var(--r));opacity:0}}
+.reveal .rays{position:absolute;left:50%;top:45%;width:760px;height:760px;margin:-380px 0 0 -380px;pointer-events:none;opacity:.28;
+  background:repeating-conic-gradient(var(--c) 0 8deg,transparent 8deg 22deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 62%);mask:radial-gradient(circle,#000 0,transparent 62%);animation:spinrays 14s linear infinite}
+@keyframes spinrays{to{transform:rotate(360deg)}}
+.reveal>*:not(.glow):not(.rays){position:relative}
+.reveal.big .tiername{font-size:17px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 14px var(--c);animation:tierpop .9s ease}
+@keyframes tierpop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1)}}
+.reveal.big .bigcard{animation:cardin .8s cubic-bezier(.2,1.3,.4,1)}
+@keyframes cardin{0%{transform:scale(.6) rotate(-6deg);filter:brightness(2.4)}100%{transform:none;filter:none}}
+.reel-shell.shake{animation:shake .5s ease}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@media (prefers-reduced-motion: reduce){.confetti,.flash{display:none}.reveal .rays,.reveal.big .bigcard,.reveal.big .tiername,.reel-shell.shake{animation:none}}
+@media (max-height:520px){.chartbox{padding:12px 16px}.ch-head h3{font-size:17px}.ch-stats{margin:4px 0;gap:14px}.ch-stats b{font-size:15px}.ch-ctrl .chip{padding:5px 10px}.chsvg{margin-top:6px}.chsvg svg{max-height:calc(100dvh - 205px)}#chNote{font-size:12px!important;margin-top:4px!important}.lvcard{padding:12px 14px;gap:12px}}
 /* missions */
 .mlist{display:grid;gap:8px;margin:10px 0 6px}
 .mrow{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
@@ -612,6 +667,7 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
       <button class="btn" id="addFunds" title="Add $500 of play money">+ $500</button>
       <div class="theme-wrap"><button class="btn icon-btn" id="themeBtn" aria-label="Color theme" aria-haspopup="true" aria-expanded="false" title="Color theme">🎨</button>
         <div class="theme-pop" id="themePop" role="menu" hidden></div></div>
+      <button class="btn icon-btn" id="fsBtn" hidden aria-label="Enter full screen" title="Full screen">⛶</button>
       <button class="btn icon-btn" id="mute" aria-label="Mute sound" title="Sound on">🔊</button>
     </div>
   </div>
@@ -694,6 +750,7 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
   <section id="v-profile" hidden>
     <div id="profBanner"></div>
     <div class="prof-head" id="profHead"></div>
+    <div id="profLevel"></div>
     <div class="contents-head"><h3>Card showcase</h3><button class="btn" id="scEdit">Choose cards</button></div>
     <div class="grid" id="profShowcase" style="margin-bottom:26px"></div>
     <div class="stats" id="profStats"></div>
@@ -737,6 +794,9 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
       <h3>Odds</h3>
       <label class="row-flex">Return rate for automatic case prices <input type="number" id="admRtp" min="50" max="100" step="1" style="width:80px"> %</label>
       <p class="note" style="margin:8px 0 0">Lower means pricier cases for the same cards. Cases with a fixed price ignore this.</p>
+      <label class="check" style="margin-top:16px"><input type="checkbox" id="admMarket"> Daily market price drift</label>
+      <p class="note" style="margin:6px 0 0">Card prices move up or down a little each day at midnight, and case prices follow. The prices you set below are each card's base price. <button class="btn" id="admMarketReset" style="margin-left:6px">Reset market to base prices</button></p>
+      <p class="note" style="margin:8px 0 0">Raising a card's raw price also raises its BSA 10 price by the same percentage and lowers its drop odds. Lowering it does the opposite.</p>
       <label class="row-flex" style="margin-top:16px">Trade-up minimum value going in <input type="number" id="admTuMin" min="0" max="100" step="5" style="width:80px"> % of the average value out</label>
       <p class="note" style="margin:8px 0 0">Stops cheap cards from being traded up into far more valuable ones. At 60%, a contract whose results average $250 needs at least $150 of cards going in. Set to 0 to turn the minimum off.</p>
     </div>
@@ -833,6 +893,14 @@ td .tb{display:inline-block;width:10px;height:10px;border-radius:2px;margin-righ
 
 <div class="rotate" role="alert" aria-live="assertive"><div class="phone" aria-hidden="true"></div><b>Turn your phone sideways</b><p>Pullbox plays in landscape. Rotate your device to continue.</p></div>
 
+<dialog id="chartDlg" aria-labelledby="chT"><div class="pwbox chartbox">
+  <div class="ch-head"><div><h3 id="chT"></h3><small id="chSet"></small></div><button class="btn icon-btn" id="chClose" aria-label="Close price history">✕</button></div>
+  <div class="ch-stats" id="chStats"></div>
+  <div class="ch-ctrl"><div class="chips" id="chRange" role="group" aria-label="Time range"></div><div class="chips" id="chMode" role="group" aria-label="Price type"></div></div>
+  <div class="chsvg" id="chSvg"></div>
+  <p class="note" id="chNote" style="margin:8px 0 0;font-size:13px"></p>
+</div></dialog>
+
 <dialog id="reveal"><div id="revealBody"></div></dialog>
 
 <script>
@@ -913,6 +981,7 @@ const curProfile=()=>PROFILES.find(p=>p.id===PID)||PROFILES[0];
 let settings=Object.assign({rtp:88,tuMin:60},LS.get("settings",{}));
 RTP=settings.rtp/100;
 const clone=o=>JSON.parse(JSON.stringify(o));
+let MK=Object.assign({on:true,day:null,m:{},h:{}},LS.get("market",{}));
 let CASES=LS.get("cases",null);
 if(!Array.isArray(CASES)||!CASES.length)CASES=clone(CASES_BUILTIN);
 let overrides=LS.get("overrides",{});
@@ -935,7 +1004,8 @@ const $=s=>document.querySelector(s);
 const fmt=n=>n>=100000?"$"+(n/1000).toLocaleString("en-US",{maximumFractionDigits:0})+"k":n.toLocaleString("en-US",{style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2});
 const pct=p=>{const v=p*100;return v>=1?v.toFixed(2)+"%":v>=0.01?v.toFixed(3)+"%":v.toPrecision(2)+"%"};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function card(c){const o=overrides[c.id]||{};return Object.assign({},c,o)}
+function mkMult(id){return MK.on&&MK.m[id]?MK.m[id]:1}
+function card(c){const o=overrides[c.id]||{};const x=Object.assign({},c,o);const m=mkMult(c.id);if(m!==1){x.raw=Math.max(0.25,Math.round(x.raw*m*100)/100);x.psa10=Math.max(x.raw,Math.round(x.psa10*m*100)/100)}return x}
 function tierOf(v){let t=TIERS[0];for(const x of TIERS)if(v>=x.min)t=x;return t}
 function hash(s){let h=2166136261;for(const ch of s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function artStyle(c,tier){const h=hash(c.id);const hue=h%360,hue2=(hue+60+(h>>8)%120)%360;
@@ -1033,7 +1103,7 @@ function renderContents(s){
   $("#contents").innerHTML=[...s.list].sort((a,b)=>b.c.raw-a.c.raw).map(e=>`
     <div class="item" style="--c:${e.tier.c}" data-preview="${e.c.id}">${artHTML(e.c,e.tier)}
       <div class="info"><b>${esc(e.c.name)}</b><small>${esc(e.c.set)}</small>${((state.collected||{})[current?current.id:""]||{})[e.c.id]?'<span class="gotit">✓ Collected</span>':""}
-      <div class="row"><span class="v">${fmt(e.c.raw)}</span><span class="o">${pct(e.p)}</span></div>
+      <div class="row"><span class="v">${fmt(e.c.raw)} ${chgHTML(e.c.id)}</span><span class="o">${pct(e.p)}</span></div>
       <div class="gr">BSA 10 ${fmt(e.c.psa10)}, ${pct(e.p*e.g)}</div></div></div>`).join("");
   document.querySelectorAll("[data-preview]").forEach(d=>{const e=s.list.find(x=>x.c.id===d.dataset.preview);d.querySelector(".art").onclick=()=>openInspect({id:e.c.id,name:e.c.name,set:e.c.set,imgUrl:e.c.imgUrl||null,raw:e.c.raw,psa10:e.c.psa10,graded:false,value:e.c.raw,caseName:current?current.name:"",preview:true,odds:e.p})});
 }
@@ -1047,7 +1117,7 @@ const WIN=48,LEN=56;
 function spin(free){
   if(spinning||!current)return;const s=caseStats(current);if(free===true){if(!(state.freeCases>0)||s.price>100)return}else if(state.balance<s.price)return;
   audio();
-  spinning=true;if(free===true){state.freeCases--}else{state.balance=Math.round((state.balance-s.price)*100)/100;state.spent+=s.price}state.opened++;save();renderBal();updateOpenBtn();track("open",{caseId:current.id});
+  spinning=true;if(free===true){state.freeCases--}else{state.balance=Math.round((state.balance-s.price)*100)/100;state.spent+=s.price}state.opened++;save();renderBal();updateOpenBtn();track("open",{caseId:current.id});addXP(Math.max(5,Math.round(s.price)));
   const result=roll(s);
   const items=[];for(let i=0;i<LEN;i++){
     if(i===WIN){items.push(result.graded?{special:true,e:result.e}:{e:result.e});continue}
@@ -1064,7 +1134,7 @@ function spin(free){
   let last=-1,raf;
   const loop=()=>{const m=new DOMMatrixReadOnly(getComputedStyle(strip).transform);const idx=Math.floor((-m.m41+W/2)/T);if(idx!==last){if(last!==-1)tick();last=idx}raf=requestAnimationFrame(loop)};
   raf=requestAnimationFrame(loop);
-  let done=false;const finish=()=>{if(done)return;done=true;cancelAnimationFrame(raf);setTimeout(()=>reveal(result),result.graded?350:150)};
+  let done=false;const finish=()=>{if(done)return;done=true;cancelAnimationFrame(raf);const bigR=result.graded||TIERS.indexOf(result.e.tier)>=3;if(bigR){$("#reelShell").classList.remove("shake");void $("#reelShell").offsetWidth;$("#reelShell").classList.add("shake")}setTimeout(()=>reveal(result),bigR?750:150)};
   strip.addEventListener("transitionend",finish,{once:true});setTimeout(finish,dur*1000+400);
 }
 $("#openBtn").onclick=()=>spin(false);$("#freeBtn").onclick=()=>spin(true);
@@ -1085,8 +1155,8 @@ function reveal(r){
   save();renderFeed();
   const level=TIERS.indexOf(tier)+(it.graded?1:0);chime(Math.min(level,3));
   const mult=it.graded?`Graded BSA 10, ${(it.psa10/it.raw).toFixed(1)}× the raw price of ${fmt(it.raw)}`:"";
-  $("#revealBody").innerHTML=`<div class="reveal pop ${it.graded?"graded":""}" style="--c:${it.graded?"var(--gold)":tier.c}">
-    <div class="glow"></div>
+  $("#revealBody").innerHTML=`<div class="reveal pop ${it.graded?"graded":""}${bigPull(it)?" big":""}" style="--c:${it.graded?"var(--gold)":tier.c}">
+    <div class="glow"></div>${bigPull(it)?'<div class="rays"></div>':""}
     <div class="tiername">${tier.name}${it.graded?" + Graded":""}</div>
     <h3>${esc(it.name)}</h3><div class="setname">${esc(it.set)}</div>
     ${cardVisual(it,true)}
@@ -1097,7 +1167,7 @@ function reveal(r){
     save();renderBal();dlg.close();spinning=false;updateOpenBtn();checkBadges();if(r.after)r.after()};
   $("#rvSell").onclick=async()=>{if(await confirmSell([it]))close(false)};$("#rvKeep").onclick=()=>close(true);$("#rvInspect").onclick=()=>openInspect(it);
   dlg.oncancel=e=>{e.preventDefault();close(true)};
-  dlg.showModal();$("#rvKeep").focus();checkBadges();
+  dlg.showModal();$("#rvKeep").focus();if(bigPull(it))celebrate(it,tier);checkBadges();
 }
 
 /* ---------- inventory ---------- */
@@ -1159,7 +1229,7 @@ function confirmSell(items,o={}){items=items.filter(Boolean);if(!items.length)re
     $("#sellYes").onclick=()=>done(true);$("#sellNo").onclick=()=>done(false);d.oncancel=e=>{e.preventDefault();done(false)}})}
 $("#invSort").onchange=renderInv;
 $("#sellAll").onclick=async()=>{const prot=protectedUids();const list=state.inv.filter(i=>!i.graded&&!prot.has(i.uid));if(!list.length){alert("There are no non-graded cards to sell. Cards in a binder or your showcase are skipped.");return}if(await confirmSell(list,{bulk:true}))sell(list.map(i=>i.uid))};
-$("#resetAll").onclick=async()=>{if(await ask("Reset your balance to $1,000 and clear inventory and stats?")){state=Object.assign(STATE_DEFAULT(),{muted:state.muted,badges:state.badges,daily:state.daily,collected:{}});save();renderBal();renderFeed();renderInv()}};
+$("#resetAll").onclick=async()=>{if(await ask("Reset your balance to $1,000 and clear inventory and stats?")){state=Object.assign(STATE_DEFAULT(),{muted:state.muted,badges:state.badges,daily:state.daily,collected:{},xp:state.xp,level:state.level,prestige:state.prestige});save();renderBal();renderFeed();renderInv()}};
 
 /* ---------- price editor ---------- */
 function renderPrices(){
@@ -1169,12 +1239,13 @@ function renderPrices(){
   $("#rtpNote").textContent=settings.rtp;
   const cs=CASES.find(c=>c.id===sel.value);if(!cs){$("#priceTbl").innerHTML="";return}
   const s=caseStats(cs);
-  $("#priceTbl").innerHTML=`<thead><tr><th>Card</th><th>Tier</th><th>Holo</th><th>Raw sold</th><th>BSA 10 sold</th><th>Gem chance</th><th>Drop odds</th><th>BSA 10 odds</th></tr></thead><tbody>`+
+  $("#priceTbl").innerHTML=`<thead><tr><th>Card</th><th>Tier</th><th>Holo</th><th>24h</th><th>Raw sold</th><th>BSA 10 sold</th><th>Gem chance</th><th>Drop odds</th><th>BSA 10 odds</th></tr></thead><tbody>`+
     s.list.map(e=>`<tr><td><span class="thumb">${artHTML(e.c,e.tier)}</span><span style="display:inline-block;vertical-align:middle">${esc(e.c.name)}<br><small style="color:var(--muted)">${esc(e.c.set)}</small></span></td>
-      <td><span class="tb" style="background:${e.tier.c}"></span>${e.tier.name}</td><td>${isHolo(e.c)?"✓":""}</td><td>${fmt(e.c.raw)}</td><td>${fmt(e.c.psa10)}</td><td>${e.c.gem}%</td><td>${pct(e.p)}</td><td>${pct(e.p*e.g)}</td></tr>`).join("")+
-    `</tbody><tfoot><tr><th colspan="8">Case price ${fmt(s.price)}${cs.fixedPrice>0?" (fixed)":""}, expected value ${fmt(s.ev)}</th></tr></tfoot>`;
+      <td><span class="tb" style="background:${e.tier.c}"></span>${e.tier.name}</td><td>${isHolo(e.c)?"✓":""}</td><td><button class="btn" data-chart="${e.c.id}" style="padding:4px 8px;font-size:12px" aria-label="Price history for ${esc(e.c.name)}">📈 ${chgHTML(e.c.id)||"0.0%"}</button></td><td>${fmt(e.c.raw)}</td><td>${fmt(e.c.psa10)}</td><td>${e.c.gem}%</td><td>${pct(e.p)}</td><td>${pct(e.p*e.g)}</td></tr>`).join("")+
+    `</tbody><tfoot><tr><th colspan="9">Case price ${fmt(s.price)}${cs.fixedPrice>0?" (fixed)":""}, expected value ${fmt(s.ev)}</th></tr></tfoot>`;
 }
 $("#priceCase").onchange=renderPrices;
+$("#priceTbl").addEventListener("click",e=>{const b=e.target.closest("[data-chart]");if(b)openChart(b.dataset.chart)});
 
 /* ---------- misc ---------- */
 $("#addFunds").onclick=()=>{state.balance=Math.round((state.balance+500)*100)/100;save();renderBal();updateOpenBtn()};
@@ -1211,11 +1282,11 @@ function openInspect(it,fromInv){if(!it)return;const tier=tierOf(it.raw);const c
     ${it.preview?`<dt>Drop odds</dt><dd>${pct(it.odds)}</dd>`:""}
     ${it.caseName?`<dt>${it.preview?"Case":"Pulled from"}</dt><dd>${esc(it.caseName)}</dd>`:""}
     ${it.at?`<dt>Pulled</dt><dd>${new Date(it.at).toLocaleDateString()}</dd>`:""}</dl>
-    <div class="btns"><button class="btn" id="inFlip">Flip</button><button class="btn" id="inSpin" aria-pressed="false">Auto-rotate</button><button class="btn" id="inReset">Reset view</button><button class="btn-gold" id="inClose" style="font-size:15px;padding:8px">Close</button></div>`;
+    <div class="btns"><button class="btn" id="inChart" style="grid-column:1/-1">📈 Price history</button><button class="btn" id="inFlip">Flip</button><button class="btn" id="inSpin" aria-pressed="false">Auto-rotate</button><button class="btn" id="inReset">Reset view</button><button class="btn-gold" id="inClose" style="font-size:15px;padding:8px">Close</button></div>`;
   Object.assign(V,{rx:-8,ry:-22,z:1,vx:0,vy:0,spin:false,tween:null});
   $("#inFlip").onclick=()=>{V.spin=false;$("#inSpin").setAttribute("aria-pressed","false");V.tween={from:V.ry,to:Math.round((V.ry+180)/180)*180,t:0}};
   $("#inSpin").onclick=e=>{V.spin=!V.spin;e.currentTarget.setAttribute("aria-pressed",String(V.spin))};
-  $("#inReset").onclick=resetView;$("#inClose").onclick=()=>$("#inspect").close();
+  $("#inReset").onclick=resetView;$("#inChart").onclick=()=>openChart(it.id);$("#inClose").onclick=()=>$("#inspect").close();
   const d=$("#inspect");d.showModal();fitInspect();$("#stage").focus();cancelAnimationFrame(V.raf);V.raf=requestAnimationFrame(frame)}
 function fitInspect(){const st=$("#stage");if(!st)return;const r=st.getBoundingClientRect();if(!r.width||!r.height)return;
   V.fit=Math.min(1,(r.height*0.74)/V.oh,(r.width*0.74)/V.ow)}
@@ -1296,7 +1367,7 @@ function avatarFromFile(file){return new Promise((res,rej)=>{
   im.onload=()=>{const S=256,m=Math.min(im.width,im.height);const cv=document.createElement("canvas");cv.width=cv.height=S;
     cv.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);URL.revokeObjectURL(url);res(cv.toDataURL("image/jpeg",0.88))};
   im.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("That file isn't an image this browser can read. Try PNG, JPG, WebP or GIF."))};im.src=url})}
-function renderProfileChip(){const p=curProfile();$("#profBtn").innerHTML=avatarHTML(p,28)+`<span>${esc(p.name)}</span>`}
+function renderProfileChip(){const p=curProfile();$("#profBtn").innerHTML=avatarHTML(p,28)+`<span>${esc(p.name)}</span><span class="lvpill" id="lvPill">${lvLabel(state)}</span>`}
 function closeProfMenu(){$("#profPop").hidden=true;$("#profBtn").setAttribute("aria-expanded","false")}
 $("#profBtn").onclick=e=>{e.stopPropagation();const pop=$("#profPop");if(!pop.hidden){closeProfMenu();return}
   pop.innerHTML=PROFILES.map(p=>`<button role="menuitemradio" aria-checked="${p.id===PID}" data-switch="${p.id}">${avatarHTML(p,24)}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</span></button>`).join("")+
@@ -1310,7 +1381,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#profPop").hidd
 function refreshViews(){renderBal();renderFeed();renderMute();renderProfileChip();updateOpenBtn();
   if(!$("#v-inventory").hidden)renderInv();if(!$("#v-profile").hidden)renderProfile();if(!$("#v-games").hidden)renderGames();if(admin&&!$("#v-admin").hidden)renderAdmin();renderDailyBtn()}
 function switchProfile(id){if(spinning){alert("Wait for the current case to finish opening before switching profiles.");return}if(id===PID)return;
-  save();PID=id;viewPid=null;LS.set("pid",PID);state=loadState(PID);checkBadges(true);refreshViews()}
+  save();PID=id;viewPid=null;LS.set("pid",PID);state=loadState(PID);syncValues(state);checkBadges(true);refreshViews()}
 function newProfile(){if(spinning)return;const p={id:"p"+Date.now().toString(36),name:"Player "+(PROFILES.length+1),status:"",bio:"",created:Date.now()};
   PROFILES.push(p);LS.set("profiles",PROFILES);switchProfile(p.id);show("profile");openProfileEdit()}
 async function deleteProfile(id){if(PROFILES.length<=1){alert("Keep at least one profile.");return false}const p=PROFILES.find(x=>x.id===id);if(!p)return false;
@@ -1343,6 +1414,7 @@ function renderProfile(noCheck){const own=!viewPid||viewPid===PID;const pid=own?
     <div class="showcase">${earned.slice(0,10).map(b=>badgeHTML(b,38)).join("")||`<span class="note">${own?"No badges yet. Open cases to start earning them.":"No badges yet."}</span>`}</div></div>
     ${own?'<button class="btn" id="profEdit">Edit profile</button>':"<span></span>"}`;
   if(own)$("#profEdit").onclick=openProfileEdit;
+  $("#profLevel").innerHTML=levelCardHTML(st);
   // showcase
   const sc=(st.showcase||[]).map(u=>st.inv.find(i=>i.uid===u)).filter(Boolean);
   $("#scEdit").hidden=!own;$("#scEdit").textContent=sc.length?"Edit showcase":"Choose cards";
@@ -1388,6 +1460,7 @@ const LB=[
   {k:"inv",n:"Most valuable inventory",f:st=>invOf(st),money:true,sub:st=>`${st.inv.length} card${st.inv.length===1?"":"s"}`,empty:"No one is holding any cards yet."},
   {k:"opened",n:"Most cases unboxed",f:st=>st.opened||0,unit:" cases",empty:"No cases have been opened yet."},
   {k:"best",n:"Highest value pull",f:st=>st.best?st.best.value:0,money:true,sub:st=>st.best?`${st.best.graded?"BSA 10 ":""}${st.best.name}`:"",empty:"No one has pulled a card yet."},
+  {k:"level",n:"Highest level",f:st=>(st.prestige||0)*100+(st.level||1)+Math.min(.99,(st.xp||0)/xpNeed(st.level||1)),show:st=>lvLabel(st,true),sub:st=>`${(st.xp||0).toLocaleString()} XP into this level`,empty:"No one has any levels yet."},
   {k:"lost",n:"Most money lost",f:st=>(st.spent||0)-(st.sold||0)-invOf(st),money:true,neg:true,sub:st=>`Spent ${fmt(st.spent||0)}, got back ${fmt((st.sold||0)+invOf(st))}`,empty:"Nobody is down money right now."}];
 let lbTab="inv";
 function renderLeader(){
@@ -1401,19 +1474,20 @@ function renderLeader(){
     const sub=cat.sub?cat.sub(r.st):r.p.status||"";
     return `<button class="lbrow${r.p.id===PID?" me":""}" data-lbp="${r.p.id}"><span class="rk rk${i+1}">${i+1}</span>${avatarHTML(r.p,42)}
       <span class="lbname"><b>${esc(r.p.name)}${r.p.id===PID?' <small style="color:var(--gold)">(you)</small>':""}${bs.map(b=>badgeHTML(b,20)).join("")}</b><small>${esc(sub)}</small></span>
-      <span class="lbv${cat.neg?" neg":""}">${cat.money?(cat.neg?"−":"")+fmt(r.v):r.v.toLocaleString()+(cat.unit||"")}</span></button>`}).join("")
+      <span class="lbv${cat.neg?" neg":""}">${cat.show?cat.show(r.st):cat.money?(cat.neg?"−":"")+fmt(r.v):r.v.toLocaleString()+(cat.unit||"")}</span></button>`}).join("")
     :`<div class="empty">${cat.empty}</div>`;
   document.querySelectorAll("[data-lbp]").forEach(b=>b.onclick=()=>{viewPid=b.dataset.lbp===PID?null:b.dataset.lbp;show("profile")});
 }
 
 /* ---------- admin: profiles & badges ---------- */
-function stateOf(pid){return pid===PID?state:loadState(pid)}
+function stateOf(pid){if(pid!==PID){const st=loadState(pid);syncValues(st);return st}return pid===PID?state:loadState(pid)}
 function putState(pid,st){if(pid===PID){state=st;save()}else LS.set("state:"+pid,st)}
 function renderAdminProfiles(){
-  $("#admProfTbl").innerHTML=`<thead><tr><th>Profile</th><th>Balance</th><th>Cases</th><th>Badges</th><th>Award or revoke a badge</th><th></th></tr></thead><tbody>`+
+  $("#admProfTbl").innerHTML=`<thead><tr><th>Profile</th><th>Balance</th><th>Cases</th><th>Level</th><th>Badges</th><th>Award or revoke a badge</th><th></th></tr></thead><tbody>`+
     PROFILES.map(p=>{const st=stateOf(p.id);const n=Object.keys(st.badges).filter(k=>BADGES.some(b=>b.id===k)).length;
       return `<tr><td><span class="row-flex">${avatarHTML(p,30)}<span>${esc(p.name)}${p.id===PID?' <small style="color:var(--gold)">(current)</small>':""}</span></span></td>
-      <td>${fmt(st.balance)}</td><td>${st.opened}</td><td>${n}</td>
+      <td>${fmt(st.balance)}</td><td>${st.opened}</td>
+      <td><span class="lvadm"><label class="row-flex" style="gap:3px">P<input type="number" min="0" max="999" step="1" value="${st.prestige||0}" data-lvp="${p.id}" aria-label="Prestige for ${esc(p.name)}"></label><label class="row-flex" style="gap:3px">Lv<input type="number" min="1" max="100" step="1" value="${st.level||1}" data-lvl="${p.id}" aria-label="Level for ${esc(p.name)}"></label><button class="btn" data-lvset="${p.id}">Set</button><button class="btn" data-lvreset="${p.id}">Reset</button></span></td><td>${n}</td>
       <td><span class="row-flex"><select data-awsel="${p.id}" aria-label="Badge for ${esc(p.name)}">${BADGES.map(b=>`<option value="${b.id}">${esc(b.name)}${st.badges[b.id]?" ✓":""}</option>`).join("")}</select>
         <button class="btn" data-award="${p.id}">Award</button><button class="btn" data-revoke="${p.id}">Revoke</button></span></td>
       <td><span class="row-flex">${p.id===PID?"":`<button class="btn" data-pswitch="${p.id}">Switch to</button>`}<button class="btn danger" data-pdel="${p.id}">Delete</button></span></td></tr>`}).join("")+"</tbody>";
@@ -1422,6 +1496,12 @@ function renderAdminProfiles(){
     if(st.badges[bid])return;st.badges[bid]=Date.now();putState(pid,st);if(pid===PID)showToasts([BADGES.find(x=>x.id===bid)]);renderAdminProfiles()});
   t.querySelectorAll("[data-revoke]").forEach(b=>b.onclick=()=>{const pid=b.dataset.revoke,bid=t.querySelector(`[data-awsel="${pid}"]`).value;const st=stateOf(pid);
     delete st.badges[bid];putState(pid,st);renderAdminProfiles()});
+  t.querySelectorAll("[data-lvset]").forEach(b=>b.onclick=()=>{const pid=b.dataset.lvset;const pr=Math.round(+t.querySelector(`[data-lvp="${pid}"]`).value),lv=Math.round(+t.querySelector(`[data-lvl="${pid}"]`).value);
+    if(!(pr>=0&&pr<=999)||!(lv>=1&&lv<=100)){alert("Enter a prestige from 0 to 999 and a level from 1 to 100.");return}
+    const st=stateOf(pid);st.prestige=pr;st.level=lv;st.xp=0;putState(pid,st);if(pid===PID)renderProfileChip();renderAdminProfiles();notify('<span class="ticon">⬆</span>',"Level set",PROFILES.find(x=>x.id===pid).name,lvLabel(st,true))});
+  t.querySelectorAll("[data-lvreset]").forEach(b=>b.onclick=async()=>{const pid=b.dataset.lvreset;const nm=PROFILES.find(x=>x.id===pid).name;
+    if(!(await ask(`Reset ${nm} to Level 1 with no prestige? Their XP is cleared. Rewards already paid are kept.`,{ok:"Reset level"})))return;
+    const st=stateOf(pid);st.prestige=0;st.level=1;st.xp=0;putState(pid,st);if(pid===PID)renderProfileChip();renderAdminProfiles()});
   t.querySelectorAll("[data-pswitch]").forEach(b=>b.onclick=()=>switchProfile(b.dataset.pswitch));
   t.querySelectorAll("[data-pdel]").forEach(b=>b.onclick=()=>deleteProfile(b.dataset.pdel));
   $("#admNewProf").onclick=()=>{const p={id:"p"+Date.now().toString(36),name:"Player "+(PROFILES.length+1),status:"",bio:"",created:Date.now()};PROFILES.push(p);LS.set("profiles",PROFILES);renderAdminProfiles()};
@@ -1571,7 +1651,7 @@ function renderDaily(){const i=dailyInfo();dailyWasReady=i.ready;const base=Math
 function claimDaily(){const i=dailyInfo();if(!i.ready)return;i.d.streak=i.next;i.d.last=Date.now();state.balance=round2(state.balance+DAILY_AMT);
   let token=false;if(i.d.streak%7===0){state.freeCases=(state.freeCases||0)+1;token=true}
   save();renderBal();updateOpenBtn();renderDailyBtn();renderDaily();chime(2);
-  track("daily");
+  track("daily");addXP(50);
   if(token)notify('<span class="ticon">🎟</span>',"Free case earned",`Day ${i.d.streak} bonus`,"Open any case priced up to $100 for free.");checkBadges()}
 $("#dailyBtn").onclick=()=>{renderDaily();$("#dailyDlg").showModal()};
 setInterval(()=>{const dayChanged=state.missions&&state.missions.day!==todayKey();if(dayChanged)ensureMissions();renderDailyBtn();
@@ -1616,10 +1696,10 @@ function missionsHTML(){const M=ensureMissions();const allClaimed=M.list.every(m
     ${allClaimed?(M.bonus?'<p class="gotit" style="margin:4px 0 0">✓ All missions done for today. Bonus claimed.</p>':`<button class="btn-gold" id="mBonus" style="width:100%;font-size:15px;padding:9px">Claim ${fmt(MISSION_BONUS).replace(".00","")} completion bonus</button>`):""}</div>`}
 function wireMissions(){const M=state.missions;if(!M)return;
   document.querySelectorAll("[data-mclaim]").forEach(b=>b.onclick=()=>{const m=M.list.find(x=>x.id===b.dataset.mclaim);if(!m||m.claimed||m.progress<m.target)return;
-    m.claimed=true;state.balance=round2(state.balance+m.reward);save();renderBal();updateOpenBtn();chime(2);renderDaily();renderDailyBtn()});
+    m.claimed=true;state.balance=round2(state.balance+m.reward);addXP(25);save();renderBal();updateOpenBtn();chime(2);renderDaily();renderDailyBtn()});
   document.querySelectorAll("[data-mswap]").forEach(b=>b.onclick=()=>{if(!M.rerolls)return;const k=M.list.findIndex(x=>x.id===b.dataset.mswap);if(k<0)return;
     M.list[k]=newMission(M.list.map(x=>x.type));M.rerolls--;save();renderDaily();renderDailyBtn()});
-  const bb=$("#mBonus");if(bb)bb.onclick=()=>{if(M.bonus||!M.list.every(m=>m.claimed))return;M.bonus=true;state.balance=round2(state.balance+MISSION_BONUS);save();renderBal();updateOpenBtn();chime(3);renderDaily();renderDailyBtn()}}
+  const bb=$("#mBonus");if(bb)bb.onclick=()=>{if(M.bonus||!M.list.every(m=>m.claimed))return;M.bonus=true;state.balance=round2(state.balance+MISSION_BONUS);addXP(50);save();renderBal();updateOpenBtn();chime(3);renderDaily();renderDailyBtn()}}
 
 /* ---------- games ---------- */
 let gTab="trade";
@@ -1675,7 +1755,7 @@ function renderTrade(){const el=$("#g-trade");if(!CASES.length){el.innerHTML='<d
     chosen.forEach(i=>TU.sel.push(i.uid));renderTrade()};
   $("#tuGo").onclick=async()=>{if(spinning||TU.sel.length!==10||!outs.length||(minPct&&!meetsMin))return;
     if(!await ask(`Trade these 10 cards (${fmt(inVal)}) for one ${TIERS[outT].name} card from ${cs.name}?`))return;
-    spinning=true;audio();removeItems(TU.sel);TU.sel=[];state.tradeups=(state.tradeups||0)+1;track("tradeup");save();
+    spinning=true;audio();removeItems(TU.sel);TU.sel=[];state.tradeups=(state.tradeups||0)+1;addXP(40);track("tradeup");save();
     const btn=$("#tuGo");btn.disabled=true;btn.textContent="Signing contract…";for(let k=0;k<6;k++){tick();await sleep(120)}
     let r=Math.random()*tot,pick=outs[outs.length-1];for(const e of outs){r-=e.p;if(r<=0){pick=e;break}}
     reveal({src:"tradeup",e:pick,graded:Math.random()<pick.g,caseId:cs.id,caseName:cs.name,after:()=>{if(!$("#v-games").hidden)renderTrade()}})};
@@ -1717,7 +1797,7 @@ function spinColumn(i,s,res,me){return new Promise(done=>{const col=$("#bcol-"+i
   let last=-1,raf=0;if(me){const loop=()=>{const mm=new DOMMatrixReadOnly(getComputedStyle(strip).transform);const idx=Math.floor((-mm.m42+H/2)/T);if(idx!==last){if(last!==-1)tick();last=idx}raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop)}
   setTimeout(()=>{cancelAnimationFrame(raf);done()},dur*1000+150)})}
 async function startBattle(){if(spinning)return;const cs=CASES.find(c=>c.id===BT.caseId);const s=caseStats(cs),cost=round2(s.price*BT.rounds);if(state.balance<cost)return;
-  audio();state.balance=round2(state.balance-cost);state.spent=round2(state.spent+cost);state.opened+=BT.rounds;track("open",{caseId:cs.id,count:BT.rounds});state.battles=(state.battles||0)+1;save();renderBal();
+  audio();state.balance=round2(state.balance-cost);state.spent=round2(state.spent+cost);state.opened+=BT.rounds;addXP(Math.max(5,Math.round(s.price))*BT.rounds);track("open",{caseId:cs.id,count:BT.rounds});state.battles=(state.battles||0)+1;save();renderBal();
   const names=[...BOT_NAMES].sort(()=>Math.random()-.5).slice(0,BT.bots);
   BT.players=[{name:curProfile().name,me:true,p:curProfile(),pulls:[],total:0},...names.map(n=>({name:n,me:false,p:{id:"bot-"+n,name:n},pulls:[],total:0}))];
   BT.running=true;BT.winner=null;BT.loot=null;spinning=true;renderArena();
@@ -1728,7 +1808,7 @@ async function startBattle(){if(spinning)return;const cs=CASES.find(c=>c.id===BT
     if(results.some(x=>x.graded))chime(3);await sleep(BT.quick?300:800)}
   const totals=BT.players.map(p=>p.total);const target=BT.mode==="crazy"?Math.min(...totals):Math.max(...totals);const tied=BT.players.filter(p=>p.total===target);
   BT.winner=tied[Math.floor(Math.random()*tied.length)];BT.running=false;
-  if(BT.winner.me){BT.loot=BT.players.flatMap(p=>p.pulls);state.battleWins=(state.battleWins||0)+1;track("battleWin");recordReceived(BT.loot);chime(3)}else{spinning=false;save()}
+  if(BT.winner.me){addXP(25);BT.loot=BT.players.flatMap(p=>p.pulls);state.battleWins=(state.battleWins||0)+1;track("battleWin");recordReceived(BT.loot);chime(3)}else{spinning=false;save()}
   renderArena();checkBadges()}
 function showBattleResult(){const r=$("#btResult");const loot=BT.loot,won=BT.winner.me;const val=loot?loot.reduce((a,b)=>a+b.value,0):0;
   $("#btStatus").textContent=won?"You won the battle!":`${BT.winner.name} won the battle`;
@@ -1787,13 +1867,13 @@ function renderUpgrader(){const el=$("#g-upgrade");const prot=protectedUids();if
 async function upSpin(sv,tv,chance,tEntry,stakeIt){if(UP.busy||spinning||!chance)return;
   if(UP.stake==="card"){if(!stakeIt)return;if(!await ask(`Risk ${stakeIt.name} (${fmt(sv)}) for a ${pct(chance)} chance at ${fmt(tv)}?`))return;removeItems([stakeIt.uid]);UP.uid=null}
   else{if(state.balance<sv)return;if(!await ask(`Risk ${fmt(sv)} for a ${pct(chance)} chance at ${fmt(tv)}?`))return;state.balance=round2(state.balance-sv);state.spent=round2(state.spent+sv)}
-  audio();UP.frozen={sv,tv,chance};UP.busy=true;spinning=true;UP.msg="";state.upgrades=(state.upgrades||0)+1;track("upgrade");save();renderBal();renderUpgrader();
+  audio();UP.frozen={sv,tv,chance};UP.busy=true;spinning=true;UP.msg="";state.upgrades=(state.upgrades||0)+1;addXP(15);track("upgrade");save();renderBal();renderUpgrader();
   const win=Math.random()<chance;const arc=chance*360;const land=win?2+Math.random()*Math.max(0,arc-4):arc+2+Math.random()*Math.max(0,360-arc-4);
   const base=UP.rot-((UP.rot%360)+360)%360;UP.rot=base+360*5+land;const n=$("#upNeedle");const dur=matchMedia("(prefers-reduced-motion: reduce)").matches?1.2:4.5;
   n.style.transition=`transform ${dur}s cubic-bezier(0.12,0.75,0.1,1)`;void n.offsetWidth;n.style.transform=`rotate(${UP.rot}deg)`;
   let lastSeg=-1,raf=0;const loop=()=>{const mm=new DOMMatrixReadOnly(getComputedStyle(n).transform);const ang=(Math.atan2(mm.b,mm.a)*180/Math.PI+360)%360;const seg=Math.floor(ang/15);if(seg!==lastSeg){if(lastSeg!==-1)tick();lastSeg=seg}raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop);
   await sleep(dur*1000+200);cancelAnimationFrame(raf);UP.busy=false;
-  if(win){state.upgradeWins=(state.upgradeWins||0)+1;track("upgradeWin");
+  if(win){state.upgradeWins=(state.upgradeWins||0)+1;addXP(15);track("upgradeWin");
     if(UP.target==="card"){save();UP.msg="";renderUpgrader();reveal({src:"upgrade",e:tEntry.e,graded:tEntry.graded,caseId:tEntry.cs.id,caseName:tEntry.cs.name,after:()=>{if(!$("#v-games").hidden)renderUpgrader()}});return}
     state.balance=round2(state.balance+tv);state.sold=round2(state.sold+tv);UP.msg=`<span style="color:var(--ok)">You won ${fmt(tv)}!</span>`;chime(3)}
   else UP.msg=`<span style="color:var(--red)">No luck this time. Your ${UP.stake==="card"?"card is":"cash is"} gone.</span>`;
@@ -1809,7 +1889,104 @@ if(window.PULLBOX_APP){document.documentElement.classList.add("app");
     if(acc>30)hdr.classList.add("hide");else if(acc<-30)hdr.classList.remove("hide")},{passive:true});
   const lock=()=>{try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("landscape").catch(()=>{})}catch(e){}};
   lock();addEventListener("pointerdown",lock,{once:true});
+  // full screen: hides the browser's address bar when Pullbox is opened as a web page
+  const fsSupported=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+  const standalone=matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches||navigator.standalone;
+  const fsBtn=$("#fsBtn");
+  const inFS=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+  function paintFS(){fsBtn.textContent=inFS()?"⤢":"⛶";fsBtn.setAttribute("aria-label",inFS()?"Leave full screen":"Enter full screen");fsBtn.title=fsBtn.getAttribute("aria-label")}
+  async function enterFS(){const el=document.documentElement;try{await (el.requestFullscreen?el.requestFullscreen({navigationUI:"hide"}):el.webkitRequestFullscreen());lock()}catch(e){}}
+  async function exitFS(){try{await (document.exitFullscreen?document.exitFullscreen():document.webkitExitFullscreen())}catch(e){}}
+  if(fsSupported&&!standalone){fsBtn.hidden=false;paintFS();
+    fsBtn.onclick=()=>{const want=!inFS();LS.set("fullscreen",want);want?enterFS():exitFS()};
+    document.addEventListener("fullscreenchange",paintFS);document.addEventListener("webkitfullscreenchange",paintFS);
+    if(LS.get("fullscreen",false))addEventListener("pointerdown",()=>{if(!inFS())enterFS()},{once:true});}
+
 }
+
+/* ---------- levels & prestige ---------- */
+const LV_MAX=100,LV_REWARD=250,PRESTIGE_REWARD=500;
+const xpNeed=l=>60+8*(Math.max(1,l)-1);
+function lvLabel(st,long){const p=st.prestige||0,l=st.level||1;return long?(p?`Prestige ${p}, Level ${l}`:`Level ${l}`):(p?`P${p} Lv ${l}`:`Lv ${l}`)}
+const PCOLORS=["#4b5563","#b87333","#9ca3af","#e4ae39","#5eead4","#a855f7"];
+function prestigeEmblem(st,small){const p=st.prestige||0;return `<span class="pemb${small?" sm":""}${p>=6?" rainbow":""}" style="--pe:${PCOLORS[Math.min(p,5)]}" aria-hidden="true"><b>${p?p:(st.level||1)}</b><small>${p?"PRESTIGE":"LEVEL"}</small></span>`}
+function addXP(n){if(!(n>0))return;state.xp=(state.xp||0)+Math.round(n);state.level=state.level||1;state.prestige=state.prestige||0;const ev=[];
+  while(state.xp>=xpNeed(state.level)){state.xp-=xpNeed(state.level);state.level++;
+    if(state.level%25===0){state.balance=round2(state.balance+LV_REWARD);ev.push(["⬆","Level up!",`Level ${state.level}`,`Reward: ${fmt(LV_REWARD).replace(".00","")} added to your balance.`])}
+    if(state.level>=LV_MAX){state.prestige++;state.level=1;state.balance=round2(state.balance+PRESTIGE_REWARD);ev.push(["★","Prestige!",`Prestige ${state.prestige}, Level 1`,`Reward: ${fmt(PRESTIGE_REWARD).replace(".00","")} added to your balance.`])}
+    else if(state.level%25!==0)ev.push(["⬆","Level up!",lvLabel(state,true),`${(xpNeed(state.level)).toLocaleString()} XP to the next level.`])}
+  save();const pill=$("#lvPill");if(pill){pill.textContent=lvLabel(state);pill.classList.remove("bump");void pill.offsetWidth;pill.classList.add("bump")}
+  if(ev.length){renderBal();updateOpenBtn();ev.forEach(e=>notify(`<span class="ticon">${e[0]}</span>`,e[1],e[2],e[3]));chime(3);if(!$("#v-profile").hidden)renderProfile(true)}}
+function levelCardHTML(st){const l=st.level||1,xp=st.xp||0,need=xpNeed(l),next=Math.ceil((l+1)/25)*25,nextR=next>=LV_MAX?`${fmt(LV_REWARD).replace(".00","")} + ${fmt(PRESTIGE_REWARD).replace(".00","")} prestige at level 100`:`${fmt(LV_REWARD).replace(".00","")} at level ${next}`;
+  return `<div class="lvcard">${prestigeEmblem(st)}<div style="min-width:0"><h3>${lvLabel(st,true)}</h3><div class="lvsub">Earn XP by opening cases, battles, trade-ups, the upgrader, daily rewards and missions.</div>
+    <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="${need}" aria-valuenow="${xp}" aria-label="XP to next level"><i style="width:${Math.min(100,xp/need*100)}%"></i></div>
+    <div class="lvrow"><span><b>${xp.toLocaleString()}</b> of ${need.toLocaleString()} XP to level ${l+1>=LV_MAX?"100":l+1}</span><span>Next reward: <b>${nextR}</b></span></div></div></div>`}
+
+/* ---------- market price drift ---------- */
+const dayIndex=(t=Date.now())=>Math.floor((t-new Date(t).getTimezoneOffset()*60000)/DAY);
+function allCards(){const out=[];CASES.forEach(cs=>cs.cards.forEach(c=>out.push(c)));return out}
+function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function saveMarket(){try{localStorage.setItem("pullbox:market",JSON.stringify(MK))}catch(e){}}
+function recordDay(c,d){const h=MK.h[c.id]||(MK.h[c.id]=[]);const cur=card(c);const last=h[h.length-1];if(last&&last[0]===d){last[1]=cur.raw;last[2]=cur.psa10}else h.push([d,cur.raw,cur.psa10]);if(h.length>120)h.splice(0,h.length-120)}
+function runMarket(){if(!MK.on)return false;const today=dayIndex();let changed=false;
+  if(MK.day==null){MK.day=today;allCards().forEach(c=>recordDay(c,today));saveMarket();return true}
+  if(today>MK.day){const steps=Math.min(today-MK.day,90);
+    for(let k=steps-1;k>=0;k--){const d=today-k;allCards().forEach(c=>{const t=TIERS.indexOf(tierOf(c.raw));const vol=[.05,.04,.035,.03,.025][t]||.03;let m=MK.m[c.id]||1;
+        m*=Math.exp(gauss()*vol)*(1+.08*(1-m));if(Math.random()<.02)m*=1+(Math.random()<.5?-1:1)*(.08+Math.random()*.12);
+        MK.m[c.id]=Math.min(1.8,Math.max(.55,Math.round(m*10000)/10000));recordDay(c,d)})}
+    MK.day=today;changed=true}
+  allCards().forEach(c=>{if(!MK.h[c.id]||!MK.h[c.id].length){recordDay(c,today);changed=true}});
+  if(changed)saveMarket();return changed}
+function syncValues(st){st.inv.forEach(it=>{const c=findCard(it.id);if(!c)return;const cur=card(c);it.raw=cur.raw;it.psa10=cur.psa10;it.value=it.graded?cur.psa10:cur.raw})}
+function priceChange(id){const h=MK.h[id];if(!h||h.length<2)return 0;const c=findCard(id);const now=c?card(c).raw:h[h.length-1][1];const prev=h[h.length-2][1];return prev>0?(now-prev)/prev:0}
+function chgHTML(id){if(!MK.on)return"";const x=priceChange(id);if(Math.abs(x)<0.0005)return"";return `<span class="chg ${x>0?"up":"dn"}">${x>0?"▲":"▼"} ${Math.abs(x*100).toFixed(1)}%</span>`}
+function marketTick(){if(runMarket()){syncValues(state);save();renderCases();if(current)updateOpenBtn();if(!$("#v-inventory").hidden)renderInv();if(!$("#v-prices").hidden)renderPrices();if(!$("#v-open").hidden&&current)renderContents(caseStats(current))}}
+setInterval(()=>{if(MK.on&&MK.day!=null&&dayIndex()>MK.day)marketTick()},30000);
+
+/* price history chart */
+let CH={id:null,range:30,mode:"raw"};
+function openChart(id){CH.id=id;renderChart();$("#chartDlg").showModal()}
+function renderChart(){const c=findCard(CH.id);if(!c)return;const cur=card(c);const today=dayIndex();
+  let h=(MK.h[c.id]||[]).slice();if(!h.length||h[h.length-1][0]!==today)h.push([today,cur.raw,cur.psa10]);else h[h.length-1]=[today,cur.raw,cur.psa10];
+  h=h.filter(x=>x[0]>today-CH.range);const idx=CH.mode==="raw"?1:2;const vals=h.map(x=>x[idx]);const now=vals[vals.length-1],first=vals[0];
+  const lo=Math.min(...vals),hi=Math.max(...vals),chg=first>0?(now-first)/first:0;
+  $("#chT").textContent=c.name;$("#chSet").textContent=c.set||"";
+  $("#chStats").innerHTML=`<div><small>${CH.mode==="raw"?"Raw price":"BSA 10 price"} today</small><b>${fmt(now)}</b></div><div><small>${CH.range}-day change</small><b class="chg ${chg>=0?"up":"dn"}" style="font-size:inherit">${chg>=0?"▲":"▼"} ${Math.abs(chg*100).toFixed(1)}%</b></div><div><small>Low</small><b>${fmt(lo)}</b></div><div><small>High</small><b>${fmt(hi)}</b></div>`;
+  $("#chRange").innerHTML=[7,30,90].map(r=>`<button class="chip" data-chr="${r}" aria-pressed="${CH.range===r}">${r} days</button>`).join("");
+  $("#chMode").innerHTML=[["raw","Raw"],["psa","BSA 10"]].map(([k,n])=>`<button class="chip" data-chm="${k}" aria-pressed="${CH.mode===k}">${n}</button>`).join("");
+  const W=600,H=220,pl=8,pr=8,pt=14,pb=24;const span=Math.max(hi-lo,hi*.02||1);const y0=lo-span*.12,y1=hi+span*.12;
+  const X=i=>pl+(vals.length<2?(W-pl-pr)/2:(W-pl-pr)*i/(vals.length-1)),Y=v=>pt+(H-pt-pb)*(1-(v-y0)/(y1-y0));
+  const pts=vals.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");const col=chg>=0?"var(--ok)":"var(--red)";
+  const dstr=d=>{const t=new Date(d*DAY+new Date().getTimezoneOffset()*60000);return t.toLocaleDateString(undefined,{month:"short",day:"numeric"})};
+  $("#chSvg").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.name)} ${CH.mode==="raw"?"raw":"BSA 10"} price over ${CH.range} days, from ${fmt(first)} to ${fmt(now)}">
+    <defs><linearGradient id="chg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${chg>=0?"#5fbf6a":"#eb4b4b"}" stop-opacity=".35"/><stop offset="1" stop-color="${chg>=0?"#5fbf6a":"#eb4b4b"}" stop-opacity="0"/></linearGradient></defs>
+    ${[0,.5,1].map(f=>`<line x1="${pl}" x2="${W-pr}" y1="${(pt+(H-pt-pb)*f).toFixed(1)}" y2="${(pt+(H-pt-pb)*f).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`).join("")}
+    ${vals.length>1?`<polygon points="${X(0).toFixed(1)},${H-pb} ${pts} ${X(vals.length-1).toFixed(1)},${H-pb}" fill="url(#chg)"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`:""}
+    <circle id="chDot" cx="${X(vals.length-1)}" cy="${Y(now)}" r="5" fill="${col}" stroke="var(--panel)" stroke-width="2"/>
+    <text x="${pl}" y="${H-6}" font-size="12" fill="var(--muted)">${dstr(h[0][0])}</text><text x="${W-pr}" y="${H-6}" font-size="12" fill="var(--muted)" text-anchor="end">Today</text></svg><div class="chtip" id="chTip" hidden></div>`;
+  $("#chNote").textContent=MK.on?(h.length<2?`Price history starts today and builds up one point per day. Next market update in ${fmtLeft(msToMidnight())}.`:`Prices update daily at midnight. Next update in ${fmtLeft(msToMidnight())}.`):"Daily market drift is turned off in Admin, so this price stays fixed.";
+  const svg=$("#chSvg svg"),tip=$("#chTip"),dot=$("#chDot");
+  const move=e=>{const r=svg.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W;let i=vals.length<2?0:Math.round((x-pl)/((W-pl-pr)/(vals.length-1)));i=Math.max(0,Math.min(vals.length-1,i));
+    dot.setAttribute("cx",X(i));dot.setAttribute("cy",Y(vals[i]));tip.hidden=false;tip.textContent=`${i===vals.length-1?"Today":dstr(h[i][0])}: ${fmt(vals[i])}`;tip.style.left=(X(i)/W*r.width)+"px"};
+  svg.onpointermove=move;svg.onpointerdown=move;svg.onpointerleave=()=>{tip.hidden=true;dot.setAttribute("cx",X(vals.length-1));dot.setAttribute("cy",Y(now))};
+  document.querySelectorAll("[data-chr]").forEach(b=>b.onclick=()=>{CH.range=+b.dataset.chr;renderChart()});
+  document.querySelectorAll("[data-chm]").forEach(b=>b.onclick=()=>{CH.mode=b.dataset.chm;renderChart()})}
+$("#chClose").onclick=()=>$("#chartDlg").close();
+$("#chartDlg").addEventListener("click",e=>{if(e.target===$("#chartDlg"))$("#chartDlg").close()});
+
+/* ---------- special reveals ---------- */
+function bigPull(it){return it.graded||TIERS.indexOf(tierOf(it.raw))>=3}
+function celebrate(it,tier){const dlg=$("#reveal");if(matchMedia("(prefers-reduced-motion: reduce)").matches){chime(3);return}
+  const col=it.graded?"#e4ae39":tier.hex;const huge=it.graded||TIERS.indexOf(tier)>=4;
+  const f=document.createElement("div");f.className="flash";f.style.setProperty("--fc",col);dlg.appendChild(f);setTimeout(()=>f.remove(),800);
+  const cf=document.createElement("div");cf.className="confetti";const small=matchMedia("(max-height:520px), (max-width:640px)").matches;const n=(huge?90:45)*(small?.5:1);
+  const pal=[col,"#e4ae39","#ffffff",huge?"#ff5e62":col,huge?"#3b8bff":"#f0c14f"];let html="";
+  for(let k=0;k<n;k++)html+=`<i style="left:${Math.random()*100}%;background:${pal[k%pal.length]};--x:${Math.round((Math.random()-.5)*240)}px;--r:${Math.round((Math.random()-.5)*1080)}deg;--d:${(1.6+Math.random()*1.4).toFixed(2)}s;--dl:${(Math.random()*.5).toFixed(2)}s;width:${5+Math.round(Math.random()*6)}px;height:${9+Math.round(Math.random()*8)}px"></i>`;
+  cf.innerHTML=html;dlg.appendChild(cf);setTimeout(()=>cf.remove(),3600);
+  fanfare(huge)}
+function fanfare(huge){const a=audio();if(!a)return;const t0=a.currentTime;
+  const boom=a.createOscillator(),bg=a.createGain();boom.type="sine";boom.frequency.setValueAtTime(140,t0);boom.frequency.exponentialRampToValueAtTime(45,t0+.5);bg.gain.setValueAtTime(.25,t0);bg.gain.exponentialRampToValueAtTime(.0001,t0+.6);boom.connect(bg).connect(a.destination);boom.start(t0);boom.stop(t0+.65);
+  const notes=huge?[523,659,784,1047,1319,1568]:[523,659,784,1047];notes.forEach((fq,i)=>{const o=a.createOscillator(),g=a.createGain();o.type="triangle";o.frequency.value=fq;const t=t0+.12+i*.1;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.11,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.7);o.connect(g).connect(a.destination);o.start(t);o.stop(t+.75)})}
 
 /* ---------- themes ---------- */
 const THEMES=[["auto","Match system",["#171b21","#eef0f4"]],["dark","Dark",["#171b21","#2a303a"]],["light","Light",["#eef0f4","#ffffff"]],["grey","Grey",["#2a2a2c","#3d3d41"]],["blue","Blue",["#0d1b2e","#1a3150"]],["midnight","Midnight black",["#000000","#171717"]],["crimson","Crimson",["#1d1214","#321e22"]],["forest","Forest",["#121a15","#203026"]],["synth","Synthwave",["#17122a","#3d2670"]]];
@@ -1846,7 +2023,7 @@ $("#pwCancel").onclick=()=>$("#pw").close();
 $("#lockBtn").onclick=()=>{admin=false;try{sessionStorage.removeItem("pullbox:admin")}catch(e){}applyAdmin();show("cases");renderCases()};
 
 const round2=v=>Math.round(v*100)/100;
-function commit(){saveCases();renderCases();if(current){if(!CASES.includes(current))current=null;else updateOpenBtn()}
+function commit(){saveCases();runMarket();syncValues(state);save();renderCases();if(current){if(!CASES.includes(current))current=null;else updateOpenBtn()}
   setTimeout(()=>{const fk=document.activeElement&&document.activeElement.dataset?document.activeElement.dataset.fk:null;renderAdmin();if(fk){const el=document.querySelector(`[data-fk="${fk}"]`);if(el)el.focus()}},0)}
 function newCard(){return {id:"c-"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:"New card",set:"",raw:10,psa10:100,gem:3}}
 function setBalance(v){state.balance=round2(Math.max(0,v));save();renderBal();updateOpenBtn();if(admin){$("#admBal").textContent=fmt(state.balance);renderAdminProfiles()}}
@@ -1858,7 +2035,7 @@ document.querySelectorAll("[data-atabbtn]").forEach((b,i,all)=>{b.onclick=()=>se
   b.onkeydown=e=>{const d={ArrowRight:1,ArrowLeft:-1}[e.key];if(d){e.preventDefault();const n=all[(i+d+all.length)%all.length];setAdmTab(n.dataset.atabbtn,true)}}});
 function renderAdmin(){
   if(!admin){show("cases");return}
-  $("#admBal").textContent=fmt(state.balance);$("#admBalName").textContent=curProfile().name;$("#admRtp").value=settings.rtp;$("#admTuMin").value=settings.tuMin==null?60:settings.tuMin;
+  $("#admBal").textContent=fmt(state.balance);$("#admBalName").textContent=curProfile().name;$("#admRtp").value=settings.rtp;$("#admMarket").checked=!!MK.on;$("#admTuMin").value=settings.tuMin==null?60:settings.tuMin;
   if(!CASES.some(c=>c.id===editId))editId=CASES[0]?CASES[0].id:null;
   $("#admCaseList").innerHTML=CASES.map(cs=>`<button class="chip" data-edit="${cs.id}" aria-pressed="${cs.id===editId}" style="--c:${esc(cs.color)}">${esc(cs.name)}</button>`).join("")+'<button class="chip add" id="admNewCase">+ New case</button>';
   document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{editId=b.dataset.edit;renderAdmin()});
@@ -1990,7 +2167,7 @@ function renderEditor(){
   </div>
   ${lookEditorHTML(cs)}
   <h3 style="margin:24px 0 10px">Cards in this case</h3>
-  <div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>Image</th><th>Name and set</th><th>Raw sold ($)</th><th>BSA 10 sold ($)</th><th>Gem chance (%)</th><th>Holo-foil</th><th>Odds</th><th></th></tr></thead><tbody>
+  <div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>Image</th><th>Name and set</th><th>Base raw ($)</th><th>BSA 10 sold ($)</th><th>Gem chance (%)</th><th>Holo-foil</th><th>Odds</th><th></th></tr></thead><tbody>
   ${s.list.map(e=>{const c=cs.cards.find(x=>x.id===e.c.id);return `<tr>
     <td class="imgcell" data-id="${c.id}"><span class="thumb">${artHTML(c,e.tier)}</span>
       <div class="upl" style="margin-top:6px"><label class="btn">${IMG[c.id]?"Replace":"Upload"}<input type="file" accept="image/*" data-img="${c.id}" aria-label="Upload image for ${esc(c.name)}"></label>${IMG[c.id]?`<button class="btn" data-rmimg="${c.id}">Remove</button>`:""}</div>
@@ -2024,7 +2201,7 @@ function renderEditor(){
     else if(k==="set")c.set=inp.value.trim();
     else if(k==="imgUrl"){const v=inp.value.trim();if(v)c.imgUrl=v;else delete c.imgUrl}
     else if(k==="holo"){c.holo=inp.checked}
-    else{const v=parseFloat(inp.value);if(!isFinite(v)||v<0)return;c[k]=k==="gem"?Math.min(v,100):Math.max(round2(v),0.25)}
+    else{const v=parseFloat(inp.value);if(!isFinite(v)||v<0)return;if(k==="raw"){const old=c.raw;c.raw=Math.max(round2(v),0.25);if(old>0)c.psa10=Math.max(c.raw,round2(c.psa10*c.raw/old))}else c[k]=k==="gem"?Math.min(v,100):Math.max(round2(v),0.25)}
     commit()});
   el.querySelectorAll("[data-delcard]").forEach(b=>b.onclick=()=>{if(cs.cards.length<=1){alert("A case needs at least one card.");return}
     cs.cards=cs.cards.filter(c=>c.id!==b.dataset.delcard);commit()});
@@ -2042,6 +2219,9 @@ $("#adm500").onclick=()=>setBalance(state.balance+500);
 $("#adm5000").onclick=()=>setBalance(state.balance+5000);
 $("#admSet").onclick=()=>{const v=parseFloat($("#admSetVal").value);if(isFinite(v)&&v>=0){setBalance(v);$("#admSetVal").value=""}else alert("Enter an amount of $0 or more.")};
 $("#admReset").onclick=()=>$("#resetAll").click();
+$("#admMarket").onchange=e=>{MK.on=e.target.checked;if(MK.on&&MK.day==null)runMarket();saveMarket();syncValues(state);save();commit()};
+$("#admMarketReset").onclick=async()=>{if(!(await ask("Reset every card to its base price and clear price history? The market starts drifting again from today.",{ok:"Reset market"})))return;
+  MK.m={};MK.h={};MK.day=null;runMarket();syncValues(state);save();commit();renderPrices()};
 $("#admTuMin").onchange=e=>{const v=Math.round(parseFloat(e.target.value));if(!isFinite(v)||v<0||v>100){alert("Enter a percentage from 0 to 100.");e.target.value=settings.tuMin;return}
   settings.tuMin=v;LS.set("settings",settings);if(!$("#v-games").hidden&&gTab==="trade")renderTrade()};
 $("#admRtp").onchange=e=>{const v=Math.round(parseFloat(e.target.value));if(!isFinite(v)||v<50||v>100){alert("Enter a return rate from 50 to 100.");e.target.value=settings.rtp;return}
@@ -2060,7 +2240,7 @@ $("#admImport").onchange=async e=>{const f=e.target.files[0];e.target.value="";i
 
 applyTheme();
 applyAdmin();
-renderProfileChip();checkBadges(true);renderDailyBtn();
+runMarket();syncValues(state);save();renderProfileChip();checkBadges(true);renderDailyBtn();
 renderBal();renderFeed();renderCases();renderMute();
 })();
 </script>
